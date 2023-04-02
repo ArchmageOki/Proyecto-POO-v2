@@ -3,7 +3,7 @@ public class ConsumidorFinal extends Persona {
 
     private int distancia;
 
-    /**
+    /**              
      * @param nombre    El nombre de la persona.
      * @param apellido1 El primer apellido de la persona.
      * @param apellido2 El segundo apellido de la persona.
