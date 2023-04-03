@@ -18,6 +18,7 @@ public class Cooperativa {
     public static List<EmpresaLogistica> empresasLogisticas = new ArrayList<>();
     public static List<ConsumidorFinal> consumidoresFinales = new ArrayList<>();
     public static List<Distribuidor> distribuidores = new ArrayList<>();
+    public static List<Factura> facturas = new ArrayList<>();
 
     public static Map<String, Double> productoDisponible = new HashMap<>();
 
