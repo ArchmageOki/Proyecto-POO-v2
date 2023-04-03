@@ -26,4 +26,11 @@ public class ProdMaiz extends Producto {
         return ProdMaiz.rendimientoToneladasPorHectarea;
     }
 
+    /**
+     * @return El valor por kilogramo del producto.
+     */
+    public static double getValorPorKg() {
+        return ProdMaiz.valorPorKg;
+    }
+
 }

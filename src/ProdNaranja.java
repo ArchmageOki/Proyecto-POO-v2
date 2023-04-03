@@ -26,4 +26,11 @@ public class ProdNaranja extends Producto {
         return ProdNaranja.rendimientoToneladasPorHectarea;
     }
 
+    /**
+     * @return El valor por kilogramo del producto.
+     */
+    public static double getValorPorKg() {
+        return ProdNaranja.valorPorKg;
+    }
+
 }

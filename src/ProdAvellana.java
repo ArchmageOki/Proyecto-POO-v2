@@ -26,4 +26,11 @@ public class ProdAvellana extends Producto {
         return ProdAvellana.rendimientoToneladasPorHectarea;
     }
 
+    /**
+     * @return El valor por kilogramo del producto.
+     */
+    public static double getValorPorKg() {
+        return ProdAvellana.valorPorKg;
+    }
+
 }

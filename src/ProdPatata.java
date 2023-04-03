@@ -26,4 +26,11 @@ public class ProdPatata extends Producto {
         return ProdPatata.rendimientoToneladasPorHectarea;
     }
 
+    /**
+     * @return El valor por kilogramo del producto.
+     */
+    public static double getValorPorKg() {
+        return ProdPatata.valorPorKg;
+    }
+
 }

@@ -26,4 +26,11 @@ public class ProdAceituna extends Producto {
         return ProdAceituna.rendimientoToneladasPorHectarea;
     }
 
+    /**
+     * @return El valor por kilogramo del producto.
+     */
+    public static double getValorPorKg() {
+        return ProdAceituna.valorPorKg;
+    }
+
 }

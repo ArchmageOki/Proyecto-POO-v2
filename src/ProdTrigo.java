@@ -26,4 +26,11 @@ public class ProdTrigo extends Producto {
         return ProdTrigo.rendimientoToneladasPorHectarea;
     }
 
+    /**
+     * @return El valor por kilogramo del producto.
+     */
+    public static double getValorPorKg() {
+        return ProdTrigo.valorPorKg;
+    }
+
 }

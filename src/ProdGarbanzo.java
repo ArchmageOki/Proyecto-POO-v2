@@ -26,4 +26,11 @@ public class ProdGarbanzo extends Producto {
         return ProdGarbanzo.rendimientoToneladasPorHectarea;
     }
 
+    /**
+     * @return El valor por kilogramo del producto.
+     */
+    public static double getValorPorKg() {
+        return ProdGarbanzo.valorPorKg;
+    }
+
 }

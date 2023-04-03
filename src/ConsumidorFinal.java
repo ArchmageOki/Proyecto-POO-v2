@@ -1,9 +1,10 @@
 package src;
+
 public class ConsumidorFinal extends Persona {
 
     private int distancia;
 
-    /**              
+    /**
      * @param nombre    El nombre de la persona.
      * @param apellido1 El primer apellido de la persona.
      * @param apellido2 El segundo apellido de la persona.
@@ -50,5 +51,124 @@ public class ConsumidorFinal extends Persona {
     @Override
     protected void addToCooperativa() {
         Cooperativa.addConsumidorFinal(this);
+    }
+
+    /**
+     * @param nombreProducto Producto a consultar.
+     * @param kg             Kilogramos a consultar.
+     */
+    public void comprobarPrecios(String nombreProducto, int kg) {
+        if (!Cooperativa.nombresProductos.contains(nombreProducto)) {
+            System.out.println("El producto no existe en la cooperativa.");
+        } else if (kg > 100) {
+            System.out.println("No se permiten compras superiores a 100kg.");
+        } else {
+            double tonleladasDisponibles = Cooperativa.productoDisponible.get(nombreProducto);
+            System.out.println(nombreProducto + ": " + tonleladasDisponibles + " toneladas");
+            System.out.println();
+            getPrecioEmpresasLogisticas(nombreProducto, kg);
+        }
+    }
+
+    /**
+     * @param nombreProducto Nombre del producto.
+     * @return True si el producto es perecedero. False si es no perecedero.
+     */
+    private boolean esPerecedero(String nombreProducto) {
+        switch (nombreProducto) {
+            case "Aceite", "Avellana", "Avena", "Garbanzo", "Girasol", "Maiz", "Trigo":
+                return false;
+            case "Aceituna", "Fresa", "Lechuga", "Naranja", "Patata", "Pepino", "Tomate":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * @param nombreProducto Nombre del producto.
+     * @return Valor por kilogramo de producto.
+     */
+    private double getPrecioPorKg(String nombreProducto) {
+        switch (nombreProducto) {
+            case "Aceite":
+                return ProdAceite.getValorPorKg();
+            case "Aceituna":
+                return ProdAceituna.getValorPorKg();
+            case "Avellana":
+                return ProdAvellana.getValorPorKg();
+            case "Avena":
+                return ProdAvena.getValorPorKg();
+            case "Fresa":
+                return ProdFresa.getValorPorKg();
+            case "Garbanzo":
+                return ProdGarbanzo.getValorPorKg();
+            case "Girasol":
+                return ProdGirasol.getValorPorKg();
+            case "Lechuga":
+                return ProdLechuga.getValorPorKg();
+            case "Maiz":
+                return ProdMaiz.getValorPorKg();
+            case "Naranja":
+                return ProdNaranja.getValorPorKg();
+            case "Patata":
+                return ProdPatata.getValorPorKg();
+            case "Pepino":
+                return ProdPepino.getValorPorKg();
+            case "Tomate":
+                return ProdTomate.getValorPorKg();
+            case "Trigo":
+                return ProdTrigo.getValorPorKg();
+            default:
+                return 0.0;
+        }
+    }
+
+    /**
+     * @param nombreProducto Nombre del producto que se consulta.
+     * @param kg             Cantidad de producto que se quiere consultar.
+     */
+    private void getPrecioEmpresasLogisticas(String nombreProducto, int kg) {
+        double valorPorKg = getPrecioPorKg(nombreProducto);
+        if (esPerecedero(nombreProducto)) {
+            if (this.distancia < 100) {
+                // No funcionan los for each.
+                for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
+                    System.out.print(empresa.getNombreEmpresa() + ": ");
+                    System.out.print(empresa.precioTramoGranLogistica(this.distancia, valorPorKg, kg));
+                    System.out.println(" euros.");
+                }
+            } else {
+                for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
+                    double suma = 0;
+                    System.out.print(empresa.getNombreEmpresa() + ": ");
+                    suma += empresa.precioTramoGranLogistica(100, valorPorKg, kg);
+                    suma += empresa.precioTramoPeqLogistica(this.distancia - 100, kg);
+                    System.out.print(suma);
+                    System.out.println(" euros.");
+                }
+            }
+        } else {
+            if (this.distancia < 100) {
+                for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
+                    System.out.print(empresa.getNombreEmpresa() + ": ");
+                    System.out.print(empresa.precioTramoGranLogistica(this.distancia, valorPorKg, kg));
+                    System.out.println(" euros.");
+                }
+            } else {
+                for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
+                    int distanciaAux = this.distancia;
+                    double suma = 0;
+                    System.out.print(empresa.getNombreEmpresa() + ": ");
+                    while (this.distancia > 50) {
+                        suma += empresa.precioTramoGranLogistica(distanciaAux, valorPorKg, kg);
+                        distanciaAux -= 50;
+                    }
+                    suma += empresa.precioTramoPeqLogistica(distanciaAux, kg);
+                    System.out.print(suma);
+                    System.out.println(" euros.");
+                }
+            }
+        }
     }
 }

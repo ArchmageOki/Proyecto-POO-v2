@@ -26,4 +26,11 @@ public class ProdLechuga extends Producto {
         return ProdLechuga.rendimientoToneladasPorHectarea;
     }
 
+    /**
+     * @return El valor por kilogramo del producto.
+     */
+    public static double getValorPorKg() {
+        return ProdLechuga.valorPorKg;
+    }
+
 }

@@ -26,4 +26,11 @@ public class ProdTomate extends Producto {
         return ProdTomate.rendimientoToneladasPorHectarea;
     }
 
+    /**
+     * @return El valor por kilogramo del producto.
+     */
+    public static double getValorPorKg() {
+        return ProdTomate.valorPorKg;
+    }
+
 }

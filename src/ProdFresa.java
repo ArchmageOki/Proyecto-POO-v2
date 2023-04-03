@@ -26,4 +26,11 @@ public class ProdFresa extends Producto {
         return ProdFresa.rendimientoToneladasPorHectarea;
     }
 
+    /**
+     * @return El valor por kilogramo del producto.
+     */
+    public static double getValorPorKg() {
+        return ProdFresa.valorPorKg;
+    }
+
 }

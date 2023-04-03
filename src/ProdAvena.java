@@ -26,4 +26,11 @@ public class ProdAvena extends Producto {
         return ProdAvena.rendimientoToneladasPorHectarea;
     }
 
+    /**
+     * @return El valor por kilogramo del producto.
+     */
+    public static double getValorPorKg() {
+        return ProdAvena.valorPorKg;
+    }
+
 }

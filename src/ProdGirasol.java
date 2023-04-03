@@ -26,4 +26,11 @@ public class ProdGirasol extends Producto {
         return ProdGirasol.rendimientoToneladasPorHectarea;
     }
 
+    /**
+     * @return El valor por kilogramo del producto.
+     */
+    public static double getValorPorKg() {
+        return ProdGirasol.valorPorKg;
+    }
+
 }

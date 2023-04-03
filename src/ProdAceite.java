@@ -25,4 +25,11 @@ public class ProdAceite extends Producto {
     public static double getRendimientoToneladasPorHectarea() {
         return ProdAceite.rendimientoToneladasPorHectarea;
     }
+
+    /**
+     * @return El valor por kilogramo del producto.
+     */
+    public static double getValorPorKg() {
+        return ProdAceite.valorPorKg;
+    }
 }

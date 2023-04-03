@@ -26,4 +26,11 @@ public class ProdPepino extends Producto {
         return ProdPepino.rendimientoToneladasPorHectarea;
     }
 
+    /**
+     * @return El valor por kilogramo del producto.
+     */
+    public static double getValorPorKg() {
+        return ProdPepino.valorPorKg;
+    }
+
 }
