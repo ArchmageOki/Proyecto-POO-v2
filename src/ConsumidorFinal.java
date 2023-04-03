@@ -1,5 +1,7 @@
 package src;
 
+import javax.sound.midi.Soundbank;
+
 public class ConsumidorFinal extends Persona {
 
     private int distancia;
@@ -129,45 +131,68 @@ public class ConsumidorFinal extends Persona {
      * @param kg             Cantidad de producto que se quiere consultar.
      */
     private void getPrecioEmpresasLogisticas(String nombreProducto, int kg) {
+        if (kg > Cooperativa.productoDisponible.get(nombreProducto) * 1000) {
+            System.out.println("No hay suficiente producto disponible.");
+        } else if (esPerecedero(nombreProducto)) {
+            getPrecioPerecedero(nombreProducto, kg);
+        } else {
+            getPrecioNoPerecedero(nombreProducto, kg);
+        }
+        System.out.println();
+    }
+
+    /**
+     * @param nombreProducto El producto que se está consultando.
+     * @param kg             La cantidad que se quiere.
+     */
+    private void getPrecioPerecedero(String nombreProducto, int kg) {
         double valorPorKg = getPrecioPorKg(nombreProducto);
-        if (esPerecedero(nombreProducto)) {
-            if (this.distancia < 100) {
-                // No funcionan los for each.
-                for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
-                    System.out.print(empresa.getNombreEmpresa() + ": ");
-                    System.out.print(empresa.precioTramoGranLogistica(this.distancia, valorPorKg, kg));
-                    System.out.println(" euros.");
-                }
-            } else {
-                for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
-                    double suma = 0;
-                    System.out.print(empresa.getNombreEmpresa() + ": ");
-                    suma += empresa.precioTramoGranLogistica(100, valorPorKg, kg);
-                    suma += empresa.precioTramoPeqLogistica(this.distancia - 100, kg);
-                    System.out.print(suma);
-                    System.out.println(" euros.");
-                }
+        if (this.distancia < 100) {
+            for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
+                double suma = 0;
+                System.out.print(empresa.getNombreEmpresa() + ": ");
+                suma = empresa.precioTramoGranLogistica(this.distancia, valorPorKg, kg);
+                System.out.print((double) Math.round(suma * 100) / 100);
+                System.out.println(" euros.");
             }
         } else {
-            if (this.distancia < 100) {
-                for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
-                    System.out.print(empresa.getNombreEmpresa() + ": ");
-                    System.out.print(empresa.precioTramoGranLogistica(this.distancia, valorPorKg, kg));
-                    System.out.println(" euros.");
+            for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
+                double suma = 0;
+                System.out.print(empresa.getNombreEmpresa() + ": ");
+                suma += empresa.precioTramoGranLogistica(100, valorPorKg, kg);
+                suma += empresa.precioTramoPeqLogistica(this.distancia - 100, kg);
+                System.out.print((double) Math.round(suma * 100) / 100);
+                System.out.println(" euros.");
+            }
+        }
+    }
+
+    /**
+     * @param nombreProducto El producto que se está consultando.
+     * @param kg             La cantidad que se quiere.
+     */
+    private void getPrecioNoPerecedero(String nombreProducto, int kg) {
+        double valorPorKg = getPrecioPorKg(nombreProducto);
+        if (this.distancia < 100) {
+            for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
+                double suma = 0;
+                System.out.print(empresa.getNombreEmpresa() + ": ");
+                suma = empresa.precioTramoGranLogistica(this.distancia, valorPorKg, kg);
+                System.out.print((double) Math.round(suma * 100) / 100);
+                System.out.println(" euros.");
+            }
+        } else {
+            for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
+                int distanciaAux = this.distancia;
+                double suma = 0;
+                System.out.print(empresa.getNombreEmpresa() + ": ");
+                while (this.distancia > 50) {
+                    suma += empresa.precioTramoGranLogistica(distanciaAux, valorPorKg, kg);
+                    distanciaAux -= 50;
                 }
-            } else {
-                for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
-                    int distanciaAux = this.distancia;
-                    double suma = 0;
-                    System.out.print(empresa.getNombreEmpresa() + ": ");
-                    while (this.distancia > 50) {
-                        suma += empresa.precioTramoGranLogistica(distanciaAux, valorPorKg, kg);
-                        distanciaAux -= 50;
-                    }
-                    suma += empresa.precioTramoPeqLogistica(distanciaAux, kg);
-                    System.out.print(suma);
-                    System.out.println(" euros.");
-                }
+                suma += empresa.precioTramoPeqLogistica(distanciaAux, kg);
+                System.out.print((double) Math.round(suma * 100) / 100);
+                System.out.println(" euros.");
             }
         }
     }

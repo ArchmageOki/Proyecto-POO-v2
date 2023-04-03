@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import src.ConsumidorFinal;
 import src.Cooperativa;
+import src.EmpresaLogistica;
 import src.Persona;
 import src.Productor;
 import src.ProductorFederado;
@@ -19,6 +20,9 @@ public class Tests {
     Productor productor = new Productor("Lechuga", persona, 5);
     ProductorFederado productorFederado = new ProductorFederado("Tomate", persona, 4);
     ConsumidorFinal consumidor = new ConsumidorFinal("Jose", "Garcia", "Garcia", "78451265S", 29, "Hombre", 140);
+    EmpresaLogistica empresa1 = new EmpresaLogistica("Transportes Paco S.L.", 0.043, 0.02);
+    EmpresaLogistica empresa2 = new EmpresaLogistica("Garcia y Hnos. S.L.", 0.051, 0.012);
+    EmpresaLogistica empresa3 = new EmpresaLogistica("Pamplona transportes S.L.", 0.055, 0.015);
 
     @Test
     public void quitarProductoDeProductor() {
@@ -44,7 +48,14 @@ public class Tests {
     }
 
     @Test
-    public void comprobarPreciosTest() {
+    public void comprobarPreciosConsumidorFinalTest() {
+        System.out.println("Lechuga válida:");
         consumidor.comprobarPrecios("Lechuga", 70);
+        System.out.println("Tomate de más de 100 kg:");
+        consumidor.comprobarPrecios("Tomate", 120);
+        System.out.println("Maiz insuficiente:");
+        consumidor.comprobarPrecios("Maiz", 10);
+        System.out.println("Tomate válido:");
+        consumidor.comprobarPrecios("Tomate", 20);
     }
 }
