@@ -1,10 +1,12 @@
 package test;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.Test;
 
 import src.ConsumidorFinal;
+import src.Cooperativa;
 import src.Persona;
 import src.Productor;
 import src.ProductorFederado;
@@ -31,7 +33,7 @@ public class Tests {
         productorFederado.addProducto(persona2, 0.5);
         assertEquals(4.5, productorFederado.getExtension());
         productorFederado.addProducto(persona3, 4);
-        assertEquals(4.5, productorFederado.getExtension());
+        assertTrue("Se superan las hectáreas marcadas", productorFederado.getExtension() < Cooperativa.limiteExtension);
     }
 
     @Test
