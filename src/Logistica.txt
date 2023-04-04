@@ -1,0 +1,14 @@
+Perecedero && <= 100km:
+    - Un único tramo de Gran Logística.
+
+Perecedero && > 100km:
+    - No puede superar los 200km.
+    - Un tramo de 100km de Gran Logística.
+    - Un tramo de Pequeña Logística con lo que resta.
+
+No perecedero && <= 100km:
+    - Un tramo de Gran Logística.
+
+No perecedero && > 100km: 
+    - Tramos de 50km de Gran Logística.
+    - Un tramo final con el restante de Pequeña Logística.

@@ -86,65 +86,11 @@ public class ConsumidorFinal extends Persona {
     }
 
     /**
-     * @param nombreProducto Nombre del producto.
-     * @return True si el producto es perecedero. False si es no perecedero.
-     */
-    private boolean esPerecedero(String nombreProducto) {
-        switch (nombreProducto) {
-            case "Aceite", "Avellana", "Avena", "Garbanzo", "Girasol", "Maiz", "Trigo":
-                return false;
-            case "Aceituna", "Fresa", "Lechuga", "Naranja", "Patata", "Pepino", "Tomate":
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * @param nombreProducto Nombre del producto.
-     * @return Valor por kilogramo de producto.
-     */
-    private double getPrecioPorKg(String nombreProducto) {
-        switch (nombreProducto) {
-            case "Aceite":
-                return ProdAceite.getValorPorKg();
-            case "Aceituna":
-                return ProdAceituna.getValorPorKg();
-            case "Avellana":
-                return ProdAvellana.getValorPorKg();
-            case "Avena":
-                return ProdAvena.getValorPorKg();
-            case "Fresa":
-                return ProdFresa.getValorPorKg();
-            case "Garbanzo":
-                return ProdGarbanzo.getValorPorKg();
-            case "Girasol":
-                return ProdGirasol.getValorPorKg();
-            case "Lechuga":
-                return ProdLechuga.getValorPorKg();
-            case "Maiz":
-                return ProdMaiz.getValorPorKg();
-            case "Naranja":
-                return ProdNaranja.getValorPorKg();
-            case "Patata":
-                return ProdPatata.getValorPorKg();
-            case "Pepino":
-                return ProdPepino.getValorPorKg();
-            case "Tomate":
-                return ProdTomate.getValorPorKg();
-            case "Trigo":
-                return ProdTrigo.getValorPorKg();
-            default:
-                return 0.0;
-        }
-    }
-
-    /**
      * @param nombreProducto Nombre del producto que se consulta.
      * @param kg             Cantidad de producto que se quiere consultar.
      */
     private void printPrecioEmpresasLogisticas(String nombreProducto, int kg) {
-        if (esPerecedero(nombreProducto)) {
+        if (Cooperativa.esPerecedero(nombreProducto)) {
             printPrecioPerecedero(nombreProducto, kg);
         } else {
             printPrecioNoPerecedero(nombreProducto, kg);
@@ -157,8 +103,8 @@ public class ConsumidorFinal extends Persona {
      * @param kg             La cantidad que se quiere.
      */
     private void printPrecioPerecedero(String nombreProducto, int kg) {
-        double valorPorKg = getPrecioPorKg(nombreProducto);
-        if (this.distancia < 100) {
+        double valorPorKg = Cooperativa.getPrecioPorKg(nombreProducto);
+        if (this.distancia <= 100) {
             for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
                 double suma = 0;
                 double precioCooperativa = getPrecioCooperativa(nombreProducto, kg);
@@ -195,8 +141,8 @@ public class ConsumidorFinal extends Persona {
      * @param kg             La cantidad que se quiere.
      */
     private void printPrecioNoPerecedero(String nombreProducto, int kg) {
-        double valorPorKg = getPrecioPorKg(nombreProducto);
-        if (this.distancia < 100) {
+        double valorPorKg = Cooperativa.getPrecioPorKg(nombreProducto);
+        if (this.distancia <= 100) {
             for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
                 double suma = 0;
                 double precioCooperativa = getPrecioCooperativa(nombreProducto, kg);
@@ -238,13 +184,13 @@ public class ConsumidorFinal extends Persona {
      * @return Precio que se paga a la cooperativa por el producto.
      */
     private double getPrecioCooperativa(String nombreProducto, int kg) {
-        double valorPorKg = getPrecioPorKg(nombreProducto);
+        double valorPorKg = Cooperativa.getPrecioPorKg(nombreProducto);
         return valorPorKg * kg;
     }
 
     public void comprarProducto(String nombreProducto, int kg, EmpresaLogistica empresa) {
         if(checkCondiciones(nombreProducto, kg)) {
-            Cooperativa.facturas.add(new Factura(nombreProducto, empresa, this));
+            Cooperativa.facturas.add(new Factura(nombreProducto, empresa, this, kg));
         }
     }
 }

@@ -8,6 +8,7 @@ import org.junit.Test;
 import src.ConsumidorFinal;
 import src.Cooperativa;
 import src.EmpresaLogistica;
+import src.Factura;
 import src.Persona;
 import src.Productor;
 import src.ProductorFederado;
@@ -57,5 +58,10 @@ public class Tests {
         consumidor.comprobarPrecios("Maiz", 10);
         System.out.println("Tomate válido:");
         consumidor.comprobarPrecios("Tomate", 20);
+    }
+
+    @Test
+    public void testFactura() {
+        Factura factura = new Factura("Lechuga", empresa1, consumidor, 30);
     }
 }

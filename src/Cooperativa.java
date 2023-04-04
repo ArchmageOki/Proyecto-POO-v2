@@ -160,4 +160,54 @@ public class Cooperativa {
         productoDisponible.put(nombreProducto, nuevasToneladas);
     }
 
+    /**
+     * @param nombreProducto Nombre del producto.
+     * @return Valor por kilogramo de producto.
+     */
+    public static double getPrecioPorKg(String nombreProducto) {
+        switch (nombreProducto) {
+            case "Aceite":
+                return ProdAceite.getValorPorKg();
+            case "Aceituna":
+                return ProdAceituna.getValorPorKg();
+            case "Avellana":
+                return ProdAvellana.getValorPorKg();
+            case "Avena":
+                return ProdAvena.getValorPorKg();
+            case "Fresa":
+                return ProdFresa.getValorPorKg();
+            case "Garbanzo":
+                return ProdGarbanzo.getValorPorKg();
+            case "Girasol":
+                return ProdGirasol.getValorPorKg();
+            case "Lechuga":
+                return ProdLechuga.getValorPorKg();
+            case "Maiz":
+                return ProdMaiz.getValorPorKg();
+            case "Naranja":
+                return ProdNaranja.getValorPorKg();
+            case "Patata":
+                return ProdPatata.getValorPorKg();
+            case "Pepino":
+                return ProdPepino.getValorPorKg();
+            case "Tomate":
+                return ProdTomate.getValorPorKg();
+            case "Trigo":
+                return ProdTrigo.getValorPorKg();
+            default:
+                return 0.0;
+        }
+    }
+
+    public static boolean esPerecedero(String nombreProducto) {
+        switch (nombreProducto) {
+            case "Aceite", "Avellana", "Avena", "Garbanzo", "Girasol", "Maiz", "Trigo":
+                return false;
+            case "Aceituna", "Fresa", "Lechuga", "Naranja", "Patata", "Pepino", "Tomate":
+                return true;
+            default:
+                return false;
+        }
+    }
+
 }

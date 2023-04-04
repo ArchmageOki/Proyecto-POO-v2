@@ -53,4 +53,6 @@ public class Distribuidor extends EntidadBase {
     public void setDistancia(int distancia) {
         this.distancia = distancia;
     }
+
+    // Adecuar a @ConsumidorFinal
 }
