@@ -63,5 +63,6 @@ public class Tests {
     @Test
     public void testFactura() {
         Factura factura = new Factura("Lechuga", empresa1, consumidor, 30);
+        Factura factura2 = new Factura("Tomate", empresa2, consumidor, 120);
     }
 }

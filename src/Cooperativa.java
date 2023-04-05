@@ -1,4 +1,5 @@
 package src;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -199,6 +200,10 @@ public class Cooperativa {
         }
     }
 
+    /**
+     * @param nombreProducto Nombre del producto que se quiere consultar.
+     * @return True si es perecedero. False si es no perecedero.
+     */
     public static boolean esPerecedero(String nombreProducto) {
         switch (nombreProducto) {
             case "Aceite", "Avellana", "Avena", "Garbanzo", "Girasol", "Maiz", "Trigo":

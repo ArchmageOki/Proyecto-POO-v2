@@ -12,11 +12,10 @@ public class Factura {
     private final EntidadBase comprador;
     private final int kg;
     private final double valorPorKg;
-    private static int count = 1000;
+    private static int count = 4000000;
     private final int id;
 
     public Factura(String nombreProducto, EmpresaLogistica empresa, EntidadBase comprador, int kg) {
-        // Aquí se deberían calcular las condiciones correctas para generar una factura.
         this.nombreProducto = nombreProducto;
         this.empresa = empresa;
         this.tramosGranLogistica = new ArrayList<>();
@@ -28,8 +27,43 @@ public class Factura {
         count++;
 
         calcularGranLogistica();
-        // calcularPeqLogistica();
+        calcularPeqLogistica();
+
         printFactura();
+
+    }
+
+    /**
+     * Imprime la factura. Imprimirá una factura válida si se cumplen las
+     * condiciones o una inválida si no se cumplen.
+     */
+    public void printFactura() {
+        if (checkCondiciones()) {
+            printFacturaValida();
+        } else {
+            printFacturaError();
+        }
+    }
+
+    /**
+     * @return True si se cumplen las condiciones. False si no se cumplen las
+     *         condiciones.
+     */
+    private boolean checkCondiciones() {
+        if (!Cooperativa.nombresProductos.contains(this.nombreProducto)) {
+            System.out.println("El producto no existe en la cooperativa.");
+            return false;
+        } else if (kg > Cooperativa.productoDisponible.get(this.nombreProducto) * 1000) {
+            System.out.println("No hay suficiente producto disponible.");
+            return false;
+        } else if (comprador instanceof ConsumidorFinal && kg > 100) {
+            System.out.println("No se permiten compras superiores a 100kg para consumidores finales.");
+            return false;
+        } else if (comprador instanceof Distribuidor && kg < 1000) {
+            System.out.println("No se permiten compras inferiores a 1000kg para distribuidores.");
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -61,7 +95,8 @@ public class Factura {
     }
 
     /**
-     * Introduce en el ArrayList de tramos de gran logística el precio de cada uno de los tramos.
+     * Introduce en el ArrayList de tramos de gran logística el precio de cada uno
+     * de los tramos.
      */
     private void calcularGranLogistica() {
         int distancia = 0;
@@ -85,7 +120,7 @@ public class Factura {
             double precioRedondeado = ((double) Math.round(precioTramo * 100.0) / 100.0);
             this.tramosGranLogistica.add(precioRedondeado);
         } else {
-            while(distancia > 50) {
+            while (distancia >= 50) {
                 double precioTramo = empresa.precioTramoGranLogistica(distancia, this.valorPorKg, this.kg);
                 double precioRedondeado = ((double) Math.round(precioTramo * 100.0) / 100.0);
                 this.tramosGranLogistica.add(precioRedondeado);
@@ -94,14 +129,51 @@ public class Factura {
         }
     }
 
+    private void calcularPeqLogistica() {
+        int distancia = 0;
+
+        if (comprador instanceof ConsumidorFinal) {
+            distancia = ((ConsumidorFinal) comprador).getDistancia();
+        } else if (comprador instanceof Distribuidor) {
+            distancia = ((Distribuidor) comprador).getDistancia();
+        }
+
+        if (Cooperativa.esPerecedero(this.nombreProducto) && distancia <= 100) {
+            this.tramosPeqLogistica.add(0.0);
+        } else if (Cooperativa.esPerecedero(this.nombreProducto) && distancia > 100) {
+            double precioTramo = empresa.precioTramoPeqLogistica(distancia - 100, this.kg);
+            double precioRedondeado = ((double) Math.round(precioTramo * 100) / 100);
+            this.tramosPeqLogistica.add(precioRedondeado);
+        } else if (!Cooperativa.esPerecedero(this.nombreProducto) && distancia <= 100) {
+            this.tramosPeqLogistica.add(0.0);
+        } else if (!Cooperativa.esPerecedero(this.nombreProducto) && distancia > 100) {
+            while (distancia >= 50) {
+                distancia -= 50;
+            }
+            if (distancia > 0) {
+                double precioTramo = empresa.precioTramoPeqLogistica(distancia, this.kg);
+                double precioRedondeado = ((double) Math.round(precioTramo * 100) / 100);
+                this.tramosPeqLogistica.add(precioRedondeado);
+            } else {
+                this.tramosPeqLogistica.add(0.0);
+            }
+        }
+    }
+
     /**
      * Imprime la factura.
      */
-    public void printFactura() {
+    public void printFacturaValida() {
         String nombreCompleto = null;
         String id = null;
         int distancia = 0;
         String nombreEmpresa = this.empresa.getNombreEmpresa();
+        double precioTotalLogistica = this.tramosGranLogistica.size() * getPrecioGranLogistica()
+                + this.tramosPeqLogistica.size() * getPrecioPeqLogistica();
+        double subtotal = precioTotalLogistica + getPrecioCooperativa();
+        double subtotalImpuestos = ((double) Math.round(subtotal * getImpuestos()) / 100);
+        double total = subtotal + subtotalImpuestos;
+
         if (comprador instanceof ConsumidorFinal) {
             String nombre = ((ConsumidorFinal) comprador).getNombre();
             String apellido1 = ((ConsumidorFinal) comprador).getApellido1();
@@ -113,20 +185,106 @@ public class Factura {
             // Pendiente
         }
         System.out.println();
-        System.out.println("----------------------------------------");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.printf("|     Juan Manuel Garrido S. Coop.     |\n");
-        System.out.println("----------------------------------------");
+        System.out.println("|--------------------------------------|");
+        System.out.printf("| Numero de factura: %17d |\n", this.id);
+        System.out.println("|--------------------------------------|");
         System.out.printf("| Nombre: %28s |\n", nombreCompleto);
         System.out.printf("| ID: %32s |\n", id);
         System.out.printf("| Producto adquirido: %16s |\n", this.nombreProducto);
         System.out.printf("| Cantidad: %23d kg |\n", this.kg);
         System.out.printf("| Distancia: %22d km |\n", distancia);
-        System.out.println("----------------------------------------");
-        System.out.printf("| Transportista: %20s |\n", nombreEmpresa);
+        System.out.println("|--------------------------------------|");
+        System.out.printf("| Empresa: %27s |\n", nombreEmpresa);
+        System.out.println("|                                      |");
         System.out.printf("| Tramos gran logistica:               |\n");
         System.out.printf("| \tNumero de tramos: %12d |\n", this.tramosGranLogistica.size());
-        System.out.printf("| \tPrecio por tramo: %10.2f € |\n", this.tramosGranLogistica.get(0));
-        System.out.printf("| \t |\n");
-        // Seguir aquí.
+        System.out.printf("| \tPrecio por tramo: %10.2f € |\n", getPrecioGranLogistica());
+        System.out.println("|                                      |");
+        System.out.printf("| Tramos peq. logistica:               |\n");
+        System.out.printf("| \tNumero de tramos: %12d |\n", this.tramosPeqLogistica.size());
+        System.out.printf("| \tPrecio por tramo: %10.2f € |\n", getPrecioPeqLogistica());
+        System.out.println("|                                      |");
+        System.out.printf("| Precio total logistica: %10.2f € |\n", precioTotalLogistica);
+        System.out.println("|--------------------------------------|");
+        System.out.printf("| Precio de cooperativa: %11.2f € |\n", getPrecioCooperativa());
+        System.out.println("|--------------------------------------|");
+        System.out.printf("| \tSubtotal: %18.2f € |\n", subtotal);
+        System.out.println("|--------------------------------------|");
+        System.out.printf("| Impuestos aplicables: %12.2f %% |\n", getImpuestos());
+        System.out.printf("| \tSubtotal: %18.2f € |\n", subtotalImpuestos);
+        System.out.println("|--------------------------------------|");
+        System.out.println("|                                      |");
+        System.out.printf("| TOTAL: %27.2f € |\n", total);
+        System.out.println("|                                      |");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println();
     }
+
+    /**
+     * @return Precio de la pequeña logística. Si el ArrayList está vacío, devuelve
+     *         0.00 € para evitar errores en las funciones.
+     */
+    private double getPrecioPeqLogistica() {
+        if (this.tramosPeqLogistica.isEmpty()) {
+            return 0.0;
+        } else {
+            return this.tramosPeqLogistica.get(0);
+        }
+    }
+
+    /**
+     * @return Precio de la gran logística. Si el ArrayList está vacío, devuelve
+     *         0.00 € para evitar errores en las funciones.
+     */
+    private double getPrecioGranLogistica() {
+        if (this.tramosGranLogistica.isEmpty()) {
+            return 0.0;
+        } else {
+            return this.tramosGranLogistica.get(0);
+        }
+    }
+
+    /**
+     * @return El precio que paga el comprador a la cooperativa por el producto. Si
+     *         es un consumidor final, el beneficio para la cooperativa es del 15%.
+     *         Si es un distribuidor, el beneficio es de un 5%.
+     */
+    private double getPrecioCooperativa() {
+        if (comprador instanceof ConsumidorFinal) {
+            return valorPorKg * kg * 1.15;
+        } else {
+            return valorPorKg * kg * 1.05;
+        }
+    }
+
+    /**
+     * @return El porcentaje de impuestos aplicable.
+     */
+    private double getImpuestos() {
+        if (comprador instanceof ConsumidorFinal) {
+            return 10;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Factura de error.
+     */
+    public void printFacturaError() {
+        System.out.println();
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.printf("|     Juan Manuel Garrido S. Coop.     |\n");
+        System.out.println("|--------------------------------------|");
+        System.out.printf("| Numero de factura: %17d |\n", this.id);
+        System.out.println("|--------------------------------------|");
+        System.out.printf("|          Factura no valida.          |\n");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println();
+
+        checkCondiciones();
+    }
+
 }

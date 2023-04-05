@@ -12,3 +12,38 @@ No perecedero && <= 100km:
 No perecedero && > 100km: 
     - Tramos de 50km de Gran Logística.
     - Un tramo final con el restante de Pequeña Logística.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+|     Juan Manuel Garrido S. Coop.     |
+|--------------------------------------|
+| Numero de factura:           4000000 |
+|--------------------------------------|
+| Nombre:           Jose Garcia Garcia |
+| ID:                   DNI INCORRECTO |
+| Producto adquirido:          Lechuga |
+| Cantidad:                      30 kg |
+| Distancia:                    140 km |
+|--------------------------------------|
+| Empresa:       Transportes Paco S.L. |
+|                                      |
+| Tramos gran logistica:               |    // Revisar las cuentas.
+| 	Numero de tramos:                1 |    // 1 x 100 km.
+| 	Precio por tramo:          48,37 € |
+|                                      |
+| Tramos peq. logistica:               |    // Revisar las cuentas.
+| 	Numero de tramos:                1 |    // 1 x XX km.
+| 	Precio por tramo:          51,60 € |
+|                                      |
+| Precio total logistica:      99,97 € |
+|--------------------------------------|
+| Precio de cooperativa:       25,87 € |
+|--------------------------------------|
+| 	Subtotal:                 125,85 € |
+|--------------------------------------|
+| Impuestos aplicables:        10,00 % |
+| 	Subtotal:                  12,58 € |
+|--------------------------------------|
+|                                      |
+| TOTAL:                      138,43 € |
+|                                      |
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
