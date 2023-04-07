@@ -82,6 +82,13 @@ public class Cooperativa {
     }
 
     /**
+     * @param factura Añade la factura a la lista de facturas.
+     */
+    public static void addFactura(Factura factura) {
+        Cooperativa.facturas.add(factura);
+    }
+
+    /**
      * @param nombreProducto Nombre del producto que se quiere comprobar.
      * @return True si existe un productor federado con ese producto.
      */
@@ -213,6 +220,76 @@ public class Cooperativa {
             default:
                 return false;
         }
+    }
+
+    /**
+     * @param id ID de la factura que se quiere imprimir.
+     */
+    public static void printFacturaFromId(int id) {
+        for (Factura factura : facturas) {
+            if (factura.getId() == id) {
+                factura.printFactura();
+                break;
+            } else {
+                System.out.println("No hay ninguna factura con el ID " + id + ".");
+            }
+        }
+    }
+
+    /**
+     * @param id ID de la factura.
+     * @return Cantidad de dinero que se le paga a la logística.
+     */
+    public static double getPrecioTotalLogisticaFromId(int id) {
+        for (Factura factura : facturas) {
+            if (factura.getId() == id) {
+                double precioTotalLogistica = factura.getTramosGranLogistica().size() * factura.getPrecioGranLogistica()
+                        + factura.getTramosPeqLogistica().size() * factura.getPrecioPeqLogistica();
+                return precioTotalLogistica;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * @param id ID de la factura.
+     * @return Cantidad de dinero que recibe la cooperativa.
+     */
+    public static double getPrecioTotalCooperativaFromId(int id) {
+        for (Factura factura : facturas) {
+            if (factura.getId() == id) {
+                double precioTotalCooperativa = factura.getPrecioCooperativa();
+                return precioTotalCooperativa;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * @param id ID de la factura.
+     * @return Cantidad de dinero que son impuestos.
+     */
+    public static double getPrecioTotalImpuestosFromId(int id) {
+        for (Factura factura : facturas) {
+            if (factura.getId() == id) {
+                double precioTotalImpuestos = (Cooperativa.getPrecioTotalLogisticaFromId(id)
+                        + Cooperativa.getPrecioTotalCooperativaFromId(id)) * factura.getImpuestos() / 100;
+                return precioTotalImpuestos;
+            }
+        }
+        return 0;
+    }
+
+    public static double getPrecioTotalFacturaFromId(int id) {
+        for (Factura factura : facturas) {
+            if (factura.getId() == id) {
+                double precioTotal = Cooperativa.getPrecioTotalLogisticaFromId(id)
+                        + Cooperativa.getPrecioTotalCooperativaFromId(id)
+                        + Cooperativa.getPrecioTotalImpuestosFromId(id);
+                return precioTotal;
+            }
+        }
+        return 0;
     }
 
 }

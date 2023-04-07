@@ -19,8 +19,10 @@ public class Tests {
     Persona persona2 = new Persona("Lidia", "Pedrosa", "Fernández", "73138004M", 28, "Mujer");
     Persona persona3 = new Persona("Pepe", "Castro", "Puto", "5", 29, "Hombre");
     Productor productor = new Productor("Lechuga", persona, 5);
+    Productor productor2 = new Productor("Avellana", persona2, 4);
     ProductorFederado productorFederado = new ProductorFederado("Tomate", persona, 4);
     ConsumidorFinal consumidor = new ConsumidorFinal("Jose", "Garcia", "Garcia", "78451265S", 29, "Hombre", 140);
+    ConsumidorFinal consumidor2 = new ConsumidorFinal("Mariano", "Rajoy", "Brey", "73433769J", 56, "Hombre", 220);
     EmpresaLogistica empresa1 = new EmpresaLogistica("Transportes Paco S.L.", 0.043, 0.02);
     EmpresaLogistica empresa2 = new EmpresaLogistica("Garcia y Hnos. S.L.", 0.051, 0.012);
     EmpresaLogistica empresa3 = new EmpresaLogistica("Pamplona transportes S.L.", 0.055, 0.015);
@@ -50,6 +52,7 @@ public class Tests {
 
     @Test
     public void comprobarPreciosConsumidorFinalTest() {
+        // Revisar formato!
         System.out.println("Lechuga válida:");
         consumidor.comprobarPrecios("Lechuga", 70);
         System.out.println("Tomate de más de 100 kg:");
@@ -62,7 +65,27 @@ public class Tests {
 
     @Test
     public void testFactura() {
-        Factura factura = new Factura("Lechuga", empresa1, consumidor, 30);
+        System.out.println("Producto perecedero, kg válidos, 140km");
+        Factura factura = new Factura("Lechuga", empresa1, consumidor, 50);
+        System.out.println("Factura desde la cooperativa:");
+        Cooperativa.printFacturaFromId(4000000);
+        System.out.println(Cooperativa.getPrecioTotalLogisticaFromId(4000000));
+        System.out.println("Factura no válida:");
+        Cooperativa.printFacturaFromId(1023987982);
+    }
+
+    @Test
+    public void testFactura2() {
         Factura factura2 = new Factura("Tomate", empresa2, consumidor, 120);
+    }
+
+    @Test
+    public void testFactura3() {
+        System.out.println("Producto no perecedero, kg válidos, 200km");
+        Factura factura3 = new Factura("Avellana", empresa3, consumidor2, 80);
+        System.out.printf("%6.2f €\n", Cooperativa.getPrecioTotalLogisticaFromId(4000000));
+        System.out.printf("%6.2f €\n", Cooperativa.getPrecioTotalCooperativaFromId(4000000));
+        System.out.printf("%6.2f €\n", Cooperativa.getPrecioTotalImpuestosFromId(4000000));
+        System.out.printf("%6.2f €\n", Cooperativa.getPrecioTotalFacturaFromId(4000000));
     }
 }

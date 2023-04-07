@@ -31,6 +31,23 @@ public class Factura {
 
         printFactura();
 
+        Cooperativa.addFactura(this);
+
+        // Asociar los pagos que se hacen con las personas que los producen.
+    }
+
+    /**
+     * @return Lista con los tramos de gran logística.
+     */
+    public List<Double> getTramosGranLogistica () {
+        return this.tramosGranLogistica;
+    }
+
+    /**
+     * @return Lista con los tramos de pequeña logística.
+     */
+    public List<Double> getTramosPeqLogistica() {
+        return this.tramosPeqLogistica;
     }
 
     /**
@@ -121,7 +138,7 @@ public class Factura {
             this.tramosGranLogistica.add(precioRedondeado);
         } else {
             while (distancia >= 50) {
-                double precioTramo = empresa.precioTramoGranLogistica(distancia, this.valorPorKg, this.kg);
+                double precioTramo = empresa.precioTramoGranLogistica(50, this.valorPorKg, this.kg);
                 double precioRedondeado = ((double) Math.round(precioTramo * 100.0) / 100.0);
                 this.tramosGranLogistica.add(precioRedondeado);
                 distancia -= 50;
@@ -129,6 +146,11 @@ public class Factura {
         }
     }
 
+    /**
+     * Introduce en el ArrayList de tramos de pequeña logística el precio de cada
+     * uno
+     * de los tramos.
+     */
     private void calcularPeqLogistica() {
         int distancia = 0;
 
@@ -141,7 +163,8 @@ public class Factura {
         if (Cooperativa.esPerecedero(this.nombreProducto) && distancia <= 100) {
             this.tramosPeqLogistica.add(0.0);
         } else if (Cooperativa.esPerecedero(this.nombreProducto) && distancia > 100) {
-            double precioTramo = empresa.precioTramoPeqLogistica(distancia - 100, this.kg);
+            distancia -= 100;
+            double precioTramo = empresa.precioTramoPeqLogistica(distancia, this.kg);
             double precioRedondeado = ((double) Math.round(precioTramo * 100) / 100);
             this.tramosPeqLogistica.add(precioRedondeado);
         } else if (!Cooperativa.esPerecedero(this.nombreProducto) && distancia <= 100) {
@@ -199,11 +222,13 @@ public class Factura {
         System.out.printf("| Empresa: %27s |\n", nombreEmpresa);
         System.out.println("|                                      |");
         System.out.printf("| Tramos gran logistica:               |\n");
-        System.out.printf("| \tNumero de tramos: %12d |\n", this.tramosGranLogistica.size());
+        System.out.printf("| \tNumero de tramos: %3d x %3d km |\n", this.tramosGranLogistica.size(),
+                kmPorTramoGranLogistica(distancia));
         System.out.printf("| \tPrecio por tramo: %10.2f € |\n", getPrecioGranLogistica());
         System.out.println("|                                      |");
         System.out.printf("| Tramos peq. logistica:               |\n");
-        System.out.printf("| \tNumero de tramos: %12d |\n", this.tramosPeqLogistica.size());
+        System.out.printf("| \tNumero de tramos: %3d x %3d km |\n", getTramosPeqLogistica(distancia),
+                kmPorTramoPeqLogistica(distancia));
         System.out.printf("| \tPrecio por tramo: %10.2f € |\n", getPrecioPeqLogistica());
         System.out.println("|                                      |");
         System.out.printf("| Precio total logistica: %10.2f € |\n", precioTotalLogistica);
@@ -223,10 +248,48 @@ public class Factura {
     }
 
     /**
+     * @param distancia Distancia total del trayecto, usada para calcular cuantos
+     *                  kilómetros tiene cada tramo de gran logística.
+     * @return La distancia que recorre cada tramo de gran logistica.
+     */
+    private int kmPorTramoGranLogistica(int distancia) {
+        if (Cooperativa.esPerecedero(this.nombreProducto) && distancia <= 100) {
+            return distancia;
+        } else if (Cooperativa.esPerecedero(this.nombreProducto) && distancia > 100) {
+            return 100;
+        } else if (!Cooperativa.esPerecedero(this.nombreProducto) && distancia <= 100) {
+            return distancia;
+        } else {
+            return 50;
+        }
+    }
+
+    /**
+     * @param distancia Distancia total del trayecto, usada para calcular cuantos
+     *                  kilómetros tiene cada tramo de pequeña logística.
+     * @return La distancia que recorre cada tramo de pequeña logistica.
+     */
+    private int kmPorTramoPeqLogistica(int distancia) {
+        if (Cooperativa.esPerecedero(this.nombreProducto) && distancia <= 100) {
+            return 0;
+        } else if (Cooperativa.esPerecedero(this.nombreProducto) && distancia > 100) {
+            return distancia - 100;
+        } else if (!Cooperativa.esPerecedero(this.nombreProducto) && distancia <= 100) {
+            return 0;
+        } else {
+            while (distancia > 50) {
+                distancia -= 50;
+            }
+            return distancia;
+        }
+
+    }
+
+    /**
      * @return Precio de la pequeña logística. Si el ArrayList está vacío, devuelve
      *         0.00 € para evitar errores en las funciones.
      */
-    private double getPrecioPeqLogistica() {
+    public double getPrecioPeqLogistica() {
         if (this.tramosPeqLogistica.isEmpty()) {
             return 0.0;
         } else {
@@ -235,10 +298,28 @@ public class Factura {
     }
 
     /**
+     * @param distancia Distancia total del trayecto, usada para calcular la
+     *                  cantidad de tramos de pequeña logística.
+     * @return La cantidad de tramos de pequeña logística.
+     */
+    private int getTramosPeqLogistica(int distancia) {
+        if (Cooperativa.esPerecedero(this.nombreProducto) && distancia > 100) {
+            return 1;
+        } else if (!Cooperativa.esPerecedero(this.nombreProducto) && distancia > 100) {
+            if (distancia % 50 == 0) {
+                return 0;
+            } else {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    /**
      * @return Precio de la gran logística. Si el ArrayList está vacío, devuelve
      *         0.00 € para evitar errores en las funciones.
      */
-    private double getPrecioGranLogistica() {
+    public double getPrecioGranLogistica() {
         if (this.tramosGranLogistica.isEmpty()) {
             return 0.0;
         } else {
@@ -251,7 +332,7 @@ public class Factura {
      *         es un consumidor final, el beneficio para la cooperativa es del 15%.
      *         Si es un distribuidor, el beneficio es de un 5%.
      */
-    private double getPrecioCooperativa() {
+    public double getPrecioCooperativa() {
         if (comprador instanceof ConsumidorFinal) {
             return valorPorKg * kg * 1.15;
         } else {
@@ -262,7 +343,7 @@ public class Factura {
     /**
      * @return El porcentaje de impuestos aplicable.
      */
-    private double getImpuestos() {
+    public double getImpuestos() {
         if (comprador instanceof ConsumidorFinal) {
             return 10;
         } else {

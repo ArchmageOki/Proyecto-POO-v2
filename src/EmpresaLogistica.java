@@ -1,4 +1,5 @@
 package src;
+
 public class EmpresaLogistica {
 
     private String nombreEmpresa;
@@ -75,7 +76,9 @@ public class EmpresaLogistica {
      * @return Precio que se debe pagar al transportista por el tramo.
      */
     public double precioTramoGranLogistica(int km, double valorPorKg, double cargaKg) {
-        return 0.5 * valorPorKg * cargaKg * km * precioKmGranLogistica;
+        double precioBase = 0.5 * valorPorKg * cargaKg;
+        double kilometraje = km * this.precioKmGranLogistica;
+        return precioBase + kilometraje;
     }
 
     /**
@@ -92,7 +95,7 @@ public class EmpresaLogistica {
      * @return Precio que se debe pagar al transportista por el tramo.
      */
     public double precioTramoPeqLogistica(int km, double cargaKg) {
-        return cargaKg * km * precioKmGranLogistica;
+        return cargaKg * km * precioKmPeqLogistica;
     }
 
 }

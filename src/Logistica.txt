@@ -1,5 +1,5 @@
 Perecedero && <= 100km:
-    - Un único tramo de Gran Logística.
+    - Un tramo de Gran Logística.
 
 Perecedero && > 100km:
     - No puede superar los 200km.
@@ -26,24 +26,24 @@ No perecedero && > 100km:
 |--------------------------------------|
 | Empresa:       Transportes Paco S.L. |
 |                                      |
-| Tramos gran logistica:               |    // Revisar las cuentas.
-| 	Numero de tramos:                1 |    // 1 x 100 km.
-| 	Precio por tramo:          48,37 € |
+| Tramos gran logistica:               |
+| 	Numero de tramos:       1 x 100 km |
+| 	Precio por tramo:          15,55 € |
 |                                      |
-| Tramos peq. logistica:               |    // Revisar las cuentas.
-| 	Numero de tramos:                1 |    // 1 x XX km.
-| 	Precio por tramo:          51,60 € |
+| Tramos peq. logistica:               |
+| 	Numero de tramos:       1 x  40 km |
+| 	Precio por tramo:          24,00 € |
 |                                      |
-| Precio total logistica:      99,97 € |
+| Precio total logistica:      39,55 € |
 |--------------------------------------|
 | Precio de cooperativa:       25,87 € |
 |--------------------------------------|
-| 	Subtotal:                 125,85 € |
+| 	Subtotal:                  65,43 € |
 |--------------------------------------|
 | Impuestos aplicables:        10,00 % |
-| 	Subtotal:                  12,58 € |
+| 	Subtotal:                   6,54 € |
 |--------------------------------------|
 |                                      |
-| TOTAL:                      138,43 € |
+| TOTAL:                       71,97 € |
 |                                      |
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
