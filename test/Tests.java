@@ -20,12 +20,19 @@ public class Tests {
     Persona persona3 = new Persona("Pepe", "Castro", "Puto", "5", 29, "Hombre");
     Productor productor = new Productor("Lechuga", persona, 5);
     Productor productor2 = new Productor("Avellana", persona2, 4);
+    Productor productor3 = new Productor("Lechuga", persona2, 2);
     ProductorFederado productorFederado = new ProductorFederado("Tomate", persona, 4);
     ConsumidorFinal consumidor = new ConsumidorFinal("Jose", "Garcia", "Garcia", "78451265S", 29, "Hombre", 140);
-    ConsumidorFinal consumidor2 = new ConsumidorFinal("Mariano", "Rajoy", "Brey", "73433769J", 56, "Hombre", 220);
+    ConsumidorFinal consumidor2 = new ConsumidorFinal("Mariano", "Rajoy", "Brei", "73433769J", 56, "Hombre", 145);
     EmpresaLogistica empresa1 = new EmpresaLogistica("Transportes Paco S.L.", 0.043, 0.02);
     EmpresaLogistica empresa2 = new EmpresaLogistica("Garcia y Hnos. S.L.", 0.051, 0.012);
     EmpresaLogistica empresa3 = new EmpresaLogistica("Pamplona transportes S.L.", 0.055, 0.015);
+
+    @Test
+    public void granProductor() {
+        productor.addProducto("Pepino", 3);
+        System.out.println(productor.getEsGranProductor());
+    }
 
     @Test
     public void quitarProductoDeProductor() {
@@ -88,4 +95,33 @@ public class Tests {
         System.out.printf("%6.2f €\n", Cooperativa.getPrecioTotalImpuestosFromId(4000000));
         System.out.printf("%6.2f €\n", Cooperativa.getPrecioTotalFacturaFromId(4000000));
     }
+
+    @Test
+    public void testRepartoDinero() {
+        Factura facturaLechuga = new Factura("Lechuga", empresa1, consumidor, 30);
+        persona.printDinero();
+        persona2.printDinero();
+        Cooperativa.printPersonasYDinero();
+    }
+
+    @Test
+    public void testConsumidorFinal() {
+        consumidor.comprobarPrecios("Lechuga", 50);
+        consumidor.comprarProducto("Lechuga", 50, empresa1);
+    }
+
+    @Test
+    public void testProductorFederadoCompra() {
+        productorFederado.addProducto(persona2, 0.5);
+        consumidor2.comprarProducto("Tomate", 10, empresa1);
+        System.out.println(persona.getDinero());
+        System.out.println(persona2.getDinero());
+        assertNotEquals(persona.getDinero(), persona2.getDinero());
+    }
+
+    @Test
+    public void testProductorFederadoCheckPrecios() {
+        consumidor2.comprobarPrecios("Tomate", 10);
+    } 
+
 }

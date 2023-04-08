@@ -1,4 +1,5 @@
 package src;
+
 public class Persona extends EntidadBase {
 
     private String apellido1;
@@ -6,6 +7,7 @@ public class Persona extends EntidadBase {
     private String dni;
     private int edad;
     private String sexo;
+    private double dinero;
 
     /**
      * @param nombre    El nombre de la persona.
@@ -25,6 +27,8 @@ public class Persona extends EntidadBase {
         setDni(dni);
         setEdad(edad);
         setSexo(sexo);
+        this.dinero = 0.0;
+        this.dinero = (double) Math.round(dinero * 100 / 100);
 
         addToCooperativa();
     }
@@ -164,6 +168,33 @@ public class Persona extends EntidadBase {
             this.sexo = "Mujer";
         } else {
             this.sexo = "Hombre";
+        }
+    }
+
+    /**
+     * @return Dinero de la persona.
+     */
+    public double getDinero() {
+        return this.dinero;
+    }
+
+    /**
+     * @return El dinero que ha obtenido la persona de vender sus productos.
+     */
+    public void printDinero() {
+        System.out.printf("%.2f €\n", this.dinero);
+    }
+
+    /**
+     * @param dinero Cantidad de dinero que recibe la persona.
+     */
+    public void addDinero(double dinero) {
+        if (dinero < 0) {
+            System.out.println("No se puede añadir una cantidad negativa de dinero.");
+            this.dinero += 0;
+        } else {
+            dinero = Math.round(dinero * 100) / 100.0;
+            this.dinero += dinero;
         }
     }
 

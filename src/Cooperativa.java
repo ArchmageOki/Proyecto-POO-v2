@@ -230,10 +230,9 @@ public class Cooperativa {
             if (factura.getId() == id) {
                 factura.printFactura();
                 break;
-            } else {
-                System.out.println("No hay ninguna factura con el ID " + id + ".");
             }
         }
+        System.out.println("No hay ninguna factura con el ID " + id + ".");
     }
 
     /**
@@ -280,6 +279,10 @@ public class Cooperativa {
         return 0;
     }
 
+    /**
+     * @param id ID de la factura.
+     * @return Cantidad de dinero total de la factura.
+     */
     public static double getPrecioTotalFacturaFromId(int id) {
         for (Factura factura : facturas) {
             if (factura.getId() == id) {
@@ -292,4 +295,64 @@ public class Cooperativa {
         return 0;
     }
 
+    /**
+     * @param id ID de la factura.
+     */
+    public static void pagarProductores(int id) {
+        // Saber que producto es
+        String nombreProducto = null;
+        Factura factura = null;
+        for (Factura facturaAux : facturas) {
+            if (facturaAux.getId() == id) {
+                factura = facturaAux;
+                nombreProducto = facturaAux.getNombreProducto();
+            }
+        }
+        if (nombreProducto == null && factura == null) {
+            System.out.println("La factura no existe");
+        } else {
+            // Buscar los productores que tienen ese producto y sus hectáreas
+
+            // Persona y hectáreas que posee.
+            Map<Persona, Double> pagos = new HashMap<>();
+            double hectareasTotales = 0;
+
+            for (Productor productor : productores) {
+                for (Producto producto : productor.getProductos()) {
+                    if (producto.getNombreProducto().equals(nombreProducto)) {
+                        pagos.put(producto.getPropietario(), producto.getExtension());
+                        hectareasTotales += producto.getExtension();
+                    }
+                }
+            }
+
+            for (ProductorFederado productorFederado : productoresFederados) {
+                for (Producto producto : productorFederado.getProductos()) {
+                    if (producto.getNombreProducto().equals(nombreProducto)) {
+                        producto.getPropietario();
+                        pagos.put(producto.getPropietario(), producto.getExtension());
+                        hectareasTotales += producto.getExtension();
+                    }
+                }
+            }
+
+            // Pagar proporcionalmente (sólo la parte que se lleva la cooperativa)
+
+            double dineroARepartir = Cooperativa.getPrecioTotalCooperativaFromId(id);
+            for (Persona persona : pagos.keySet()) {
+                double hectareasPersona = pagos.get(persona);
+                double parteAPagar = (hectareasPersona * dineroARepartir) / hectareasTotales;
+                persona.addDinero(parteAPagar);
+            }
+        }
+    }
+
+    public static void printPersonasYDinero() {
+        for (Persona persona : personas) {
+            String nombre = persona.getNombre();
+            String apellido1 = persona.getApellido1();
+            double dinero = persona.getDinero();
+            System.out.println(nombre + " " + apellido1 + " = " + dinero + " €");
+        }
+    }
 }

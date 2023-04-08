@@ -59,8 +59,8 @@ public class ConsumidorFinal extends Persona {
      */
     public void comprobarPrecios(String nombreProducto, int kg) {
         if (checkCondiciones(nombreProducto, kg)) {
-            double tonleladasDisponibles = Cooperativa.productoDisponible.get(nombreProducto);
-            System.out.println(nombreProducto + ": " + tonleladasDisponibles + " toneladas");
+            double toneladasDisponibles = Cooperativa.productoDisponible.get(nombreProducto);
+            System.out.println(nombreProducto + ": " + toneladasDisponibles + " toneladas");
             System.out.println();
             printPrecioEmpresasLogisticas(nombreProducto, kg);
         }
@@ -108,30 +108,48 @@ public class ConsumidorFinal extends Persona {
             for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
                 double suma = 0;
                 double precioCooperativa = getPrecioCooperativa(nombreProducto, kg);
+                double subtotal = 0;
                 double total = 0;
+                double impuestos = 0;
                 System.out.print(empresa.getNombreEmpresa() + ": ");
                 suma = empresa.precioTramoGranLogistica(this.distancia, valorPorKg, kg);
-                System.out.print((double) Math.round(suma * 100) / 100);
+                suma = ((double) Math.round(suma * 100) / 100);
+                System.out.printf("%.2f (logística)", suma);
                 System.out.print(" + ");
-                System.out.print(precioCooperativa);
-                total = ((double) Math.round(suma * 100) / 100) + precioCooperativa;
+                System.out.printf("%.2f (cooperativa)", precioCooperativa);
+                System.out.print(" + ");
+                impuestos = suma + precioCooperativa;
+                impuestos = ((double) Math.round(impuestos * 100) / 100);
+                System.out.printf("%.2f (impuestos)", impuestos);
+                subtotal = ((double) Math.round(suma * 100) / 100) + precioCooperativa;
+                total = subtotal * 1.10;
+                total = ((double) Math.round(total * 100) / 100);
                 System.out.print(" = " + total);
-                System.out.println(" euros.");
+                System.out.println(" €");
             }
         } else {
             for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
                 double suma = 0;
                 double precioCooperativa = getPrecioCooperativa(nombreProducto, kg);
+                double subtotal = 0;
                 double total = 0;
+                double impuestos = 0;
                 System.out.print(empresa.getNombreEmpresa() + ": ");
                 suma += empresa.precioTramoGranLogistica(100, valorPorKg, kg);
                 suma += empresa.precioTramoPeqLogistica(this.distancia - 100, kg);
-                System.out.print((double) Math.round(suma * 100) / 100);
+                suma = ((double) Math.round(suma * 100) / 100);
+                System.out.printf("%.2f (logística)", suma);
                 System.out.print(" + ");
-                System.out.print(precioCooperativa);
-                total = ((double) Math.round(suma * 100) / 100) + precioCooperativa;
-                System.out.print(" = " + total);
-                System.out.println(" euros.");
+                System.out.printf("%.2f (cooperativa)", precioCooperativa);
+                System.out.print(" + ");
+                impuestos = (suma + precioCooperativa) * 0.10;
+                impuestos = ((double) Math.round(impuestos * 100) / 100);
+                System.out.printf("%.2f (impuestos)", impuestos);
+                subtotal = ((double) Math.round(suma * 100) / 100) + precioCooperativa;
+                total = subtotal * 1.10;
+                total = ((double) Math.round(total * 100) / 100);
+                System.out.printf(" = %.2f", total);
+                System.out.println(" €");
             }
         }
     }
@@ -146,34 +164,52 @@ public class ConsumidorFinal extends Persona {
             for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
                 double suma = 0;
                 double precioCooperativa = getPrecioCooperativa(nombreProducto, kg);
+                double subtotal = 0;
                 double total = 0;
+                double impuestos = 0;
                 System.out.print(empresa.getNombreEmpresa() + ": ");
                 suma = empresa.precioTramoGranLogistica(this.distancia, valorPorKg, kg);
-                System.out.print((double) Math.round(suma * 100) / 100);
+                suma = ((double) Math.round(suma * 100) / 100);
+                System.out.printf("%.2f (logística)", suma);
                 System.out.print(" + ");
-                System.out.print(precioCooperativa);
-                total = ((double) Math.round(suma * 100) / 100) + precioCooperativa;
-                System.out.print(" = " + total);
-                System.out.println(" euros.");
+                System.out.printf("%.2f (cooperativa)", precioCooperativa);
+                System.out.print(" + ");
+                impuestos = suma + precioCooperativa;
+                impuestos = ((double) Math.round(impuestos * 100) / 100);
+                System.out.printf("%.2f (impuestos)", impuestos);
+                subtotal = ((double) Math.round(suma * 100) / 100) + precioCooperativa;
+                total = subtotal * 1.10;
+                total = ((double) Math.round(total * 100) / 100);
+                System.out.printf(" = %.2f", total);
+                System.out.println(" €");
             }
         } else {
             for (EmpresaLogistica empresa : Cooperativa.empresasLogisticas) {
                 int distanciaAux = this.distancia;
                 double suma = 0;
                 double precioCooperativa = getPrecioCooperativa(nombreProducto, kg);
+                double subtotal = 0;
                 double total = 0;
+                double impuestos = 0;
                 System.out.print(empresa.getNombreEmpresa() + ": ");
                 while (this.distancia > 50) {
                     suma += empresa.precioTramoGranLogistica(distanciaAux, valorPorKg, kg);
                     distanciaAux -= 50;
                 }
                 suma += empresa.precioTramoPeqLogistica(distanciaAux, kg);
-                System.out.print((double) Math.round(suma * 100) / 100);
+                suma = ((double) Math.round(suma * 100) / 100);
+                System.out.printf("%.2f (logística)", suma);
                 System.out.print(" + ");
-                System.out.print(precioCooperativa);
-                total = ((double) Math.round(suma * 100) / 100) + precioCooperativa;
-                System.out.print(" = " + total);
-                System.out.println(" euros.");
+                System.out.printf("%.2f (cooperativa)", precioCooperativa);
+                System.out.print(" + ");
+                impuestos = (suma + precioCooperativa) * 0.10;
+                impuestos = ((double) Math.round(impuestos * 100) / 100);
+                System.out.printf("%.2f (impuestos)", impuestos);
+                subtotal = ((double) Math.round(suma * 100) / 100) + precioCooperativa;
+                total = subtotal * 1.10;
+                total = ((double) Math.round(total * 100) / 100);
+                System.out.printf(" = %.2f", total);
+                System.out.println(" €");
             }
         }
     }
@@ -185,12 +221,35 @@ public class ConsumidorFinal extends Persona {
      */
     private double getPrecioCooperativa(String nombreProducto, int kg) {
         double valorPorKg = Cooperativa.getPrecioPorKg(nombreProducto);
-        return valorPorKg * kg;
+        double resultado = valorPorKg * kg * 1.15;
+        resultado = ((double) Math.round(resultado * 100) / 100);
+        return resultado;
     }
 
+    /**
+     * @param nombreProducto Nombre del producto que se va a comprar.
+     * @param kg             Cantidad que se quiere comprar.
+     * @param empresa        Empresa que se va a encargar del transporte.
+     */
     public void comprarProducto(String nombreProducto, int kg, EmpresaLogistica empresa) {
-        if(checkCondiciones(nombreProducto, kg)) {
+        if (checkCondiciones(nombreProducto, kg)) {
             Cooperativa.facturas.add(new Factura(nombreProducto, empresa, this, kg));
         }
+    }
+
+    /**
+     * No hace nada.
+     */
+    @Override
+    public void printDinero() {
+
+    }
+
+    /**
+     * No hace nada.
+     */
+    @Override
+    public void addDinero(double dinero) {
+
     }
 }

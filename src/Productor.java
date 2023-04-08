@@ -1,4 +1,5 @@
 package src;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -138,8 +139,9 @@ public class Productor {
     private void setEsGranProductor() {
         if (this.extension > Cooperativa.limiteExtension) {
             this.esGranProductor = true;
+        } else {
+            this.esGranProductor = false;
         }
-        this.esGranProductor = false;
     }
 
     /**

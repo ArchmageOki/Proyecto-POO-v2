@@ -28,7 +28,7 @@ public class ProductorFederado {
             this.balance = 0;
             this.extension = extension;
 
-            crearProducto(nombreProducto, propietario);
+            crearProducto(nombreProducto, propietario, extension);
             Cooperativa.addProductoDisponible(nombreProducto, extension);
             Cooperativa.addProductorFederado(this);
         }
@@ -88,7 +88,7 @@ public class ProductorFederado {
         if (this.extension + extension > Cooperativa.limiteExtension) {
             System.out.println("Producto no válido porque se supera el límite de hectáreas de la Cooperativa.");
         } else {
-            crearProducto(this.nombreProducto, propietario);
+            crearProducto(this.nombreProducto, propietario, extension);
             this.propietarios.add(propietario);
             this.extension += extension;
 
@@ -114,7 +114,7 @@ public class ProductorFederado {
     /**
      * @param nombreProducto El nombre del cultivo que se va a crear.
      */
-    private void crearProducto(String nombreProducto, Persona propietario) {
+    private void crearProducto(String nombreProducto, Persona propietario, double extension) {
         switch (nombreProducto) {
             case "Lechuga":
                 productos.add(new ProdLechuga(propietario, extension));

@@ -34,6 +34,8 @@ public class Factura {
         Cooperativa.addFactura(this);
 
         // Asociar los pagos que se hacen con las personas que los producen.
+
+        Cooperativa.pagarProductores(this.id);
     }
 
     /**
