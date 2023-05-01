@@ -1,0 +1,7 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "C:\\PathToFile\\junit-platform-console-standalone-1.6.0.jar"
+    ],
+    "java.debug.settings.console": "integratedTerminal"
+}

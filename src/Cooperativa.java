@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
+
+import javax.print.DocFlavor.STRING;
 
 public class Cooperativa {
 
@@ -43,6 +46,9 @@ public class Cooperativa {
     private Cooperativa() {
     }
 
+    /**
+     * @param args Argumentos.
+     */
     public static void main(String args[]) {
 
         // Inicializamos algunos objetos para no tener que crearlos a mano durante la
@@ -162,9 +168,215 @@ public class Cooperativa {
         // distribuidor.comprarProducto("Maiz", 1200, empresa5, 2);
         // Cooperativa.printPersonasYDinero();
 
-        System.out.println("Bienvenido a S. Coop. Juan Manuel Garrido");
-        // Escribir el menú
+        printBienvenida();
+        printFechaCooperativa();
+        printMenuSelector();
 
+    }
+
+    /**
+     * Bienvenida del programa.
+     */
+    private static void printBienvenida() {
+        System.out.println("\t~~~~~~~~Bienvenido a S. Coop. Juan Manuel Garrido~~~~~~~~");
+        System.out.println();
+    }
+
+    /**
+     * Imprime la fecha actual de la cooperativa.
+     */
+    private static void printFechaCooperativa() {
+        System.out.println("\tLa fecha actual es " + Cooperativa.fechaActual.getDayOfMonth() + "/"
+                + Cooperativa.fechaActual.getMonthValue() + "/" + Cooperativa.fechaActual.getYear());
+        System.out.println();
+
+    }
+
+    /**
+     * Menú selector del programa.
+     */
+    private static void printMenuSelector() {
+        Scanner scanner = new Scanner(System.in);
+        int opcion;
+
+        do {
+            System.out.println("\tAcciones disponibles:");
+            System.out.println();
+            System.out.println("\t| 1 |\tVer productos disponibles para la venta");
+            System.out.println();
+            System.out.println("\t| 2 |\tDar de alta un nuevo productor");
+            System.out.println("\t| 3 |\tAñadir un producto a un productor");
+            System.out.println("\t| 4 |\tEliminar un producto de un productor");
+
+            opcion = scanner.nextInt();
+
+            switch (opcion) {
+                case 1:
+                    printProductoDisponible();
+                    break;
+                case 2:
+                    nuevoProductor(scanner);
+                    break;
+                default:
+                    break;
+            }
+
+        } while (opcion != 9);
+
+        scanner.close();
+    }
+
+    /**
+     * Dar de alta un nuevo productor.
+     */
+    private static void nuevoProductor(Scanner scanner) {
+        String letra;
+
+        do {
+            System.out.println("\tEscoger una opción:");
+            System.out.println();
+            System.out.println("\t| P |\tProductor");
+            System.out.println("\t| F |\tProductor federado");
+            System.out.println();
+            System.out.println("\t| S |\tVolver");
+
+            letra = scanner.next();
+
+            switch (letra) {
+                case "P":
+                    addNuevoProductor(scanner);
+                    break;
+                case "F":
+                    addNuevoProductorFederado(scanner);
+                    break;
+                default:
+                    break;
+            }
+
+        } while (!letra.equals("S"));
+
+    }
+
+    /**
+     * Añade un nuevo productor federado.
+     */
+    private static void addNuevoProductorFederado(Scanner scanner) {
+        String nombre;
+        String apellido1;
+        String apellido2;
+        String dni;
+        int edad;
+        String sexo;
+        String producto;
+        double extension;
+
+        System.out.println("\tA continuación se pedirán los datos de la persona");
+        System.out.println();
+        System.out.print("\tNombre: ");
+        nombre = scanner.next();
+        System.out.print("\tPrimer apellido: ");
+        apellido1 = scanner.next();
+        System.out.print("\tSegundo apellido: ");
+        apellido2 = scanner.next();
+        System.out.print("\tDNI: ");
+        dni = scanner.next();
+        System.out.print("\tEdad: ");
+        edad = scanner.nextInt();
+        System.out.print("\tSexo (Hombre o Mujer): ");
+        sexo = scanner.next();
+        System.out.println();
+
+        Persona persona = new Persona(nombre, apellido1, apellido2, dni, edad, sexo);
+
+        System.out.print("\tProducto que va a cultivar: ");
+        do {
+            producto = scanner.next();
+            if (!Cooperativa.nombresProductos.contains(producto)) {
+                System.out.print("\tIntroduzca un producto válido: ");
+            }
+
+        } while (!Cooperativa.nombresProductos.contains(producto));
+
+        System.out.print("\tTamaño del cultivo en hectáreas (separando los decimales con coma): ");
+        extension = scanner.nextDouble();
+        do {
+            if (extension >= Cooperativa.limiteExtension) {
+                System.out.printf("\tExtensión inválida. No puede ser superior a %2.1f\n", Cooperativa.limiteExtension);
+                System.out.print("\tIntroduzca una extensión válida: ");
+                extension = scanner.nextDouble();
+            }
+        } while (extension >= Cooperativa.limiteExtension);
+
+        ProductorFederado productorFederado = new ProductorFederado(producto, persona, extension);
+
+        System.out.println("\tProductor federado añadido correctamente");
+        System.out.println();
+    }
+
+    /**
+     * Crea un productor nuevo.
+     */
+    private static void addNuevoProductor(Scanner scanner) {
+        String nombre;
+        String apellido1;
+        String apellido2;
+        String dni;
+        int edad;
+        String sexo;
+        String producto;
+        double extension;
+
+        System.out.println("\tA continuación se pedirán los datos de la persona");
+        System.out.println();
+        System.out.print("\tNombre: ");
+        nombre = scanner.next();
+        System.out.print("\tPrimer apellido: ");
+        apellido1 = scanner.next();
+        System.out.print("\tSegundo apellido: ");
+        apellido2 = scanner.next();
+        System.out.print("\tDNI: ");
+        dni = scanner.next();
+        System.out.print("\tEdad: ");
+        edad = scanner.nextInt();
+        System.out.print("\tSexo (Hombre o Mujer): ");
+        sexo = scanner.next();
+        System.out.println();
+
+        Persona persona = new Persona(nombre, apellido1, apellido2, dni, edad, sexo);
+
+        System.out.print("\tProducto que va a cultivar: ");
+        do {
+            producto = scanner.next();
+            if (!Cooperativa.nombresProductos.contains(producto)) {
+                System.out.print("\tIntroduzca un producto válido: ");
+            }
+
+        } while (!Cooperativa.nombresProductos.contains(producto));
+
+        System.out.print("\tTamaño del cultivo en hectáreas (separando los decimales con coma): ");
+        extension = scanner.nextDouble();
+        System.out.println();
+        
+
+        System.out.println();
+
+        Productor productor = new Productor(producto, persona, extension);
+
+        System.out.println("\tProductor añadido correctamente");
+        System.out.println();
+
+    }
+
+    /**
+     * Imprime el map de producto disponible.
+     */
+    private static void printProductoDisponible() {
+        for (Map.Entry<String, Double> map : productoDisponible.entrySet()) {
+            String nombreProducto = map.getKey();
+            double cantidad = map.getValue();
+            System.out.printf("\t%-10s = %8.2f toneladas\n", nombreProducto, cantidad);
+        }
+        System.out.println();
     }
 
     /**
@@ -224,7 +436,8 @@ public class Cooperativa {
     }
 
     /**
-     * @param persona Añade al consumidor final a la lista de consumidores finales.
+     * @param consumidorFinal Añade al consumidor final a la lista de consumidores
+     *                        finales.
      */
     public static void addConsumidorFinal(ConsumidorFinal consumidorFinal) {
         Cooperativa.consumidoresFinales.add(consumidorFinal);
@@ -424,6 +637,10 @@ public class Cooperativa {
         return 0;
     }
 
+    /**
+     * @param id ID de la factura.
+     * @return Dinero que se lleva la cooperativa por la venta.
+     */
     public static double getPrecioTotalCooperativa(int id) {
         for (Factura factura : facturas) {
             if (factura.getId() == id) {
@@ -524,6 +741,10 @@ public class Cooperativa {
         }
     }
 
+    /**
+     * Imprime el dinero de la cooperativa y debajo el nombre y dinero de cada
+     * persona.
+     */
     public static void printPersonasYDinero() {
         double dineroCooperativa = Cooperativa.getDinero();
         dineroCooperativa = (double) Math.round(dineroCooperativa * 100) / 100;

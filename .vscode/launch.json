@@ -6,9 +6,16 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Cooperativa",
+            "request": "launch",
+            "mainClass": "src.Cooperativa",
+            "projectName": "Proyecto POO v2_652e011e"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
-            "mainClass": "${file}",
+            "mainClass": "${file}"
         },
         {
             "type": "java",
