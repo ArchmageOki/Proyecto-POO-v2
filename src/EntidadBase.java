@@ -10,4 +10,6 @@ public abstract class EntidadBase {
 
     }
 
+    public abstract String getDireccion();
+    public abstract String getCodigoPostal();
 }

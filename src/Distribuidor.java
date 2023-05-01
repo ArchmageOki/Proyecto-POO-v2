@@ -1,14 +1,26 @@
 package src;
+
 public class Distribuidor extends EntidadBase {
 
     private String cif;
     private int distancia;
+    private String direccion;
+    private String codigoPostal;
 
-    public Distribuidor(String nombre, String cif, int distancia) {
+    /**
+     * @param nombre       Nombre de la empresa.
+     * @param cif          CIF de la empresa.
+     * @param distancia    Distancia entre la empresa y la cooperativa.
+     * @param direccion    Dirección de entrega.
+     * @param codigoPostal Código postal de la entrega.
+     */
+    public Distribuidor(String nombre, String cif, int distancia, String direccion, String codigoPostal) {
         super();
         this.nombre = nombre;
         setCif(cif);
         this.distancia = distancia;
+        this.direccion = direccion;
+        this.codigoPostal = codigoPostal;
 
         Cooperativa.addDistribuidor(this);
     }
@@ -54,6 +66,13 @@ public class Distribuidor extends EntidadBase {
         this.distancia = distancia;
     }
 
+    /**
+     * @return Nombre de la empresa.
+     */
+    public String getNombre() {
+        return this.nombre;
+    }
+
     // Adecuar a @ConsumidorFinal
 
     /**
@@ -62,7 +81,7 @@ public class Distribuidor extends EntidadBase {
      * @return True si se dan las condiciones adecuadas. False si no se cumplen.
      */
     private boolean checkCondiciones(String nombreProducto, int kg) {
-        if(!Cooperativa.nombresProductos.contains(nombreProducto)) {
+        if (!Cooperativa.nombresProductos.contains(nombreProducto)) {
             System.out.println("El producto no existe en la cooperativa.");
             return false;
         } else if (kg < 1000) {
@@ -234,10 +253,24 @@ public class Distribuidor extends EntidadBase {
      * @param kg             Cantidad que se quiere comprar.
      * @param empresa        Empresa que se va a encargar del transporte.
      */
-    public void comprarProducto(String nombreProducto, int kg, EmpresaLogistica empresa) {
+    public void comprarProducto(String nombreProducto, int kg, EmpresaLogistica empresa, int diasParaEnvio) {
         if (checkCondiciones(nombreProducto, kg)) {
-            Cooperativa.facturas.add(new Factura(nombreProducto, empresa, this, kg));
+            Cooperativa.facturas.add(new Factura(nombreProducto, empresa, this, kg, diasParaEnvio));
         }
+    }
+
+    /**
+     * Devuelve la dirección.
+     */
+    public String getDireccion() {
+        return this.direccion;
+    }
+
+    /**
+     * Devuelve el código postal.
+     */
+    public String getCodigoPostal() {
+        return this.codigoPostal;
     }
 
 }

@@ -3,21 +3,25 @@ package src;
 public class ConsumidorFinal extends Persona {
 
     private int distancia;
+    private String direccion;
+    private String codigoPostal;
 
     /**
-     * @param nombre    El nombre de la persona.
-     * @param apellido1 El primer apellido de la persona.
-     * @param apellido2 El segundo apellido de la persona.
-     * @param dni       El documento de identidad de la persona. Si se introduce un
-     *                  DNI no válido su valor será "DNI INCORRECTO".
-     * @param edad      La edad de la persona.
-     * @param sexo      El sexo de la persona. Siempre es "Hombre" a no ser que se
-     *                  introduzca "Mujer".
-     * @param distancia La distancia en kilómetros que hay entre el consumidor final
-     *                  y la cooperativa.
+     * @param nombre       El nombre de la persona.
+     * @param apellido1    El primer apellido de la persona.
+     * @param apellido2    El segundo apellido de la persona.
+     * @param dni          El documento de identidad de la persona. Si se introduce
+     *                     un DNI no válido su valor será "DNI INCORRECTO".
+     * @param edad         La edad de la persona.
+     * @param sexo         El sexo de la persona. Siempre es "Hombre" a no ser que
+     *                     se introduzca "Mujer".
+     * @param distancia    La distancia en kilómetros que hay entre el consumidor
+     *                     final y la cooperativa.
+     * @param direccion    La dirección donde se entregan los productos.
+     * @param codigoPostal El código postal donde se va a mandar.
      */
     public ConsumidorFinal(String nombre, String apellido1, String apellido2, String dni, int edad, String sexo,
-            int distancia) {
+            int distancia, String direccion, String codigoPostal) {
         super(nombre, apellido1, apellido2, dni, edad, sexo);
         if (distancia > 200) {
             System.out.println("El consumidor final no puede estar a más de 200km.");
@@ -26,6 +30,8 @@ public class ConsumidorFinal extends Persona {
         } else {
             this.distancia = distancia;
         }
+        this.direccion = direccion;
+        this.codigoPostal = codigoPostal;
     }
 
     /**
@@ -231,9 +237,9 @@ public class ConsumidorFinal extends Persona {
      * @param kg             Cantidad que se quiere comprar.
      * @param empresa        Empresa que se va a encargar del transporte.
      */
-    public void comprarProducto(String nombreProducto, int kg, EmpresaLogistica empresa) {
+    public void comprarProducto(String nombreProducto, int kg, EmpresaLogistica empresa, int diasParaEnvio) {
         if (checkCondiciones(nombreProducto, kg)) {
-            Cooperativa.facturas.add(new Factura(nombreProducto, empresa, this, kg));
+            Cooperativa.facturas.add(new Factura(nombreProducto, empresa, this, kg, diasParaEnvio));
         }
     }
 
@@ -251,5 +257,21 @@ public class ConsumidorFinal extends Persona {
     @Override
     public void addDinero(double dinero) {
 
+    }
+
+    /**
+     * Devuelve la dirección.
+     */
+    @Override
+    public String getDireccion() {
+        return this.direccion;
+    }
+
+    /**
+     * Devuelve el código postal.
+     */
+    @Override
+    public String getCodigoPostal() {
+        return this.codigoPostal;
     }
 }

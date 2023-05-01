@@ -204,4 +204,20 @@ public class Persona extends EntidadBase {
     protected void addToCooperativa() {
         Cooperativa.addPersona(this);
     }
+
+    /**
+     * Devuelve null porque no es un método de Persona. El método lo usará la clase
+     * hija ConsumidorFinal.
+     */
+    public String getDireccion() {
+        return null;
+    }
+
+    /**
+     * Devuelve null porque no es un método de Persona. El método lo usará la clase
+     * hija ConsumidorFinal.
+     */
+    public String getCodigoPostal() {
+        return null;
+    }
 }

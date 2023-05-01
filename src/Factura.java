@@ -1,5 +1,6 @@
 package src;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,8 +15,11 @@ public class Factura {
     private final double valorPorKg;
     private static int count = 4000000;
     private final int id;
+    private final LocalDate fechaCompra;
+    private final LocalDate fechaEnvio;
 
-    public Factura(String nombreProducto, EmpresaLogistica empresa, EntidadBase comprador, int kg) {
+    public Factura(String nombreProducto, EmpresaLogistica empresa, EntidadBase comprador, int kg, int diasParaEnvio) {
+
         this.nombreProducto = nombreProducto;
         this.empresa = empresa;
         this.tramosGranLogistica = new ArrayList<>();
@@ -25,6 +29,11 @@ public class Factura {
         this.valorPorKg = Cooperativa.getPrecioPorKg(this.nombreProducto);
         this.id = count;
         count++;
+        this.fechaCompra = Cooperativa.fechaActual;
+
+        diasParaEnvio = condicionesDiasEnvio(diasParaEnvio);
+
+        fechaEnvio = Cooperativa.fechaActual.plusDays(diasParaEnvio);
 
         calcularGranLogistica();
         calcularPeqLogistica();
@@ -41,7 +50,7 @@ public class Factura {
     /**
      * @return Lista con los tramos de gran logística.
      */
-    public List<Double> getTramosGranLogistica () {
+    public List<Double> getTramosGranLogistica() {
         return this.tramosGranLogistica;
     }
 
@@ -207,13 +216,21 @@ public class Factura {
             id = ((ConsumidorFinal) comprador).getDni();
             distancia = ((ConsumidorFinal) comprador).getDistancia();
         } else if (comprador instanceof Distribuidor) {
-            // Pendiente
+            nombreCompleto = ((Distribuidor) comprador).getNombre();
+            id = ((Distribuidor) comprador).getCif();
+            distancia = ((Distribuidor) comprador).getDistancia();
         }
+
         System.out.println();
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.printf("|     Juan Manuel Garrido S. Coop.     |\n");
         System.out.println("|--------------------------------------|");
         System.out.printf("| Numero de factura: %17d |\n", this.id);
+        System.out.println("|--------------------------------------|");
+        System.out.printf("| Fecha de compra: %19s |\n", this.fechaCompra.toString());
+        System.out.printf("| Fecha de entrega: %18s |\n", this.fechaEnvio.toString());
+        System.out.printf("| Dirección: %25s |\n", this.comprador.getDireccion());
+        System.out.printf("| Código postal: %21s |\n", this.comprador.getCodigoPostal());
         System.out.println("|--------------------------------------|");
         System.out.printf("| Nombre: %28s |\n", nombreCompleto);
         System.out.printf("| ID: %32s |\n", id);
@@ -370,4 +387,19 @@ public class Factura {
         checkCondiciones();
     }
 
+    /**
+     * @param diasParaEnvio Plazo de días que solicita el cliente para que se le
+     *                      entregue el producto.
+     * @return Entero entre 0 y 20. El plazo no puede ser mayor a 20 días.
+     */
+    private int condicionesDiasEnvio(int diasParaEnvio) {
+        if (diasParaEnvio > 20) {
+            System.out.println(
+                    "No se puede realizar un pedido con un plazo de entrega superior a 20 días. Se entregará dentro de 20 días.");
+            return 20;
+        } else if (diasParaEnvio < 0) {
+            return 0;
+        }
+        return diasParaEnvio;
+    }
 }
