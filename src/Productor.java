@@ -29,6 +29,13 @@ public class Productor {
     }
 
     /**
+     * @return La ID del productor.
+     */
+    public int getId() {
+        return this.propietario.getId();
+    }
+    
+    /**
      * @return Persona dueña del conjunto de cultivos.
      */
     public Persona getPropietario() {

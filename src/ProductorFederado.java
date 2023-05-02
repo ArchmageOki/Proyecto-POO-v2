@@ -12,6 +12,7 @@ public class ProductorFederado {
     private double balance;
     private double extension;
 
+    
     public ProductorFederado(String nombreProducto, Persona propietario, double extension) {
         if (!Cooperativa.nombresProductos.contains(nombreProducto)) {
             System.out.println("El producto no existe en la Cooperativa.");
@@ -28,6 +29,7 @@ public class ProductorFederado {
             this.balance = 0;
             this.extension = extension;
 
+            
             crearProducto(nombreProducto, propietario, extension);
             Cooperativa.addProductoDisponible(nombreProducto, extension);
             Cooperativa.addProductorFederado(this);

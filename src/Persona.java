@@ -8,6 +8,8 @@ public class Persona extends EntidadBase {
     private int edad;
     private String sexo;
     private double dinero;
+    private static int contador = 0;
+    private int id;
 
     /**
      * @param nombre    El nombre de la persona.
@@ -29,8 +31,17 @@ public class Persona extends EntidadBase {
         setSexo(sexo);
         this.dinero = 0.0;
         this.dinero = (double) Math.round(dinero * 100 / 100);
+        this.id = Persona.contador;
+        Persona.contador++;
 
         addToCooperativa();
+    }
+
+    /**
+     * @return ID de la persona.
+     */
+    public int getId() {
+        return this.id;
     }
 
     /**
