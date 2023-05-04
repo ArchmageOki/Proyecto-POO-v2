@@ -4,7 +4,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.junit.Test;
@@ -34,6 +33,7 @@ public class Tests {
     EmpresaLogistica empresa1 = new EmpresaLogistica("Transportes Paco S.L.", 0.043, 0.02);
     EmpresaLogistica empresa2 = new EmpresaLogistica("Garcia y Hnos. S.L.", 0.051, 0.012);
     EmpresaLogistica empresa3 = new EmpresaLogistica("Pamplona transportes S.L.", 0.055, 0.015);
+    LocalDate ld = LocalDate.now();
 
     @Test
     public void granProductor() {
@@ -68,19 +68,19 @@ public class Tests {
     public void comprobarPreciosConsumidorFinalTest() {
         // Revisar formato!
         System.out.println("Lechuga válida:");
-        consumidor.comprobarPrecios("Lechuga", 70);
+        consumidor.comprobarPrecios("Lechuga", 70, ld);
         System.out.println("Tomate de más de 100 kg:");
-        consumidor.comprobarPrecios("Tomate", 120);
+        consumidor.comprobarPrecios("Tomate", 120, ld);
         System.out.println("Maiz insuficiente:");
-        consumidor.comprobarPrecios("Maiz", 10);
+        consumidor.comprobarPrecios("Maiz", 10, ld);
         System.out.println("Tomate válido:");
-        consumidor.comprobarPrecios("Tomate", 20);
+        consumidor.comprobarPrecios("Tomate", 20, ld);
     }
 
     @Test
     public void testFactura() {
         System.out.println("Producto perecedero, kg válidos, 140km");
-        Factura factura = new Factura("Lechuga", empresa1, consumidor, 50, 7);
+        Factura factura = new Factura("Lechuga", empresa1, consumidor, 50, ld, 7);
         System.out.println("Factura desde la cooperativa:");
         Cooperativa.printFacturaFromId(4000000);
         System.out.println(Cooperativa.getPrecioTotalLogisticaFromId(4000000));
@@ -90,13 +90,13 @@ public class Tests {
 
     @Test
     public void testFactura2() {
-        Factura factura2 = new Factura("Tomate", empresa2, consumidor, 120, 7);
+        Factura factura2 = new Factura("Tomate", empresa2, consumidor, 120, ld, 7);
     }
 
     @Test
     public void testFactura3() {
         System.out.println("Producto no perecedero, kg válidos, 200km");
-        Factura factura3 = new Factura("Avellana", empresa3, consumidor2, 80, 7);
+        Factura factura3 = new Factura("Avellana", empresa3, consumidor2, 80, ld, 7);
         System.out.printf("%6.2f €\n", Cooperativa.getPrecioTotalLogisticaFromId(4000000));
         System.out.printf("%6.2f €\n", Cooperativa.getPrecioTotalProductores(4000000));
         System.out.printf("%6.2f €\n", Cooperativa.getPrecioTotalImpuestosFromId(4000000));
@@ -105,7 +105,7 @@ public class Tests {
 
     @Test
     public void testRepartoDinero() {
-        Factura facturaLechuga = new Factura("Lechuga", empresa1, consumidor, 30, 3);
+        Factura facturaLechuga = new Factura("Lechuga", empresa1, consumidor, 30, ld, 3);
         persona.printDinero();
         persona2.printDinero();
         Cooperativa.printPersonasYDinero();
@@ -115,14 +115,14 @@ public class Tests {
 
     @Test
     public void testConsumidorFinal() {
-        consumidor.comprobarPrecios("Lechuga", 50);
-        consumidor.comprarProducto("Lechuga", 50, empresa1, 4);
+        consumidor.comprobarPrecios("Lechuga", 50, ld);
+        consumidor.comprarProducto("Lechuga", 50, empresa1, ld, 4);
     }
 
     @Test
     public void testProductorFederadoCompra() {
         productorFederado.addProducto(persona2, 0.5);
-        consumidor2.comprarProducto("Tomate", 10, empresa1, 5);
+        consumidor2.comprarProducto("Tomate", 10, empresa1, ld, 5);
         System.out.println(persona.getDinero());
         System.out.println(persona2.getDinero());
         assertNotEquals(persona.getDinero(), persona2.getDinero());
@@ -130,10 +130,10 @@ public class Tests {
 
     @Test
     public void testProductorFederadoCheckPrecios() {
-        consumidor2.comprobarPrecios("Tomate", 10);
+        consumidor2.comprobarPrecios("Tomate", 10, ld);
     }
 
-    @Test
+    @Test // Comprobar
     public void testBuclesProductos() {
         for (Entry<LocalDate, Double> entry : ProdAceite.precioHistorico.entrySet()) {
             LocalDate key = entry.getKey();

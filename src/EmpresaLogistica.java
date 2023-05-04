@@ -5,6 +5,8 @@ public class EmpresaLogistica {
     private String nombreEmpresa;
     private double precioKmGranLogistica;
     private double precioKmPeqLogistica;
+    private static int contador = 1;
+    private int id;
 
     /**
      * @param nombreEmpresa         Nombre de la empresa logística.
@@ -15,8 +17,17 @@ public class EmpresaLogistica {
         this.nombreEmpresa = nombreEmpresa;
         this.precioKmGranLogistica = precioKmGranLogistica;
         this.precioKmPeqLogistica = precioKmPeqLogistica;
+        this.id = contador;
+        EmpresaLogistica.contador++;
 
         Cooperativa.addEmpresaLogistica(this);
+    }
+
+    /**
+     * @return ID de la empresa logística.
+     */
+    public int getId() {
+        return this.id;
     }
 
     /**

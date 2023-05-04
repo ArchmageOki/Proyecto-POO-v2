@@ -1,5 +1,6 @@
 package src;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
-
-import javax.print.DocFlavor.STRING;
 
 public class Cooperativa {
 
@@ -92,6 +91,8 @@ public class Cooperativa {
             System.out.println("\t| 2 |\tDar de alta un nuevo productor");
             System.out.println("\t| 3 |\tAñadir un producto a un productor");
             System.out.println("\t| 4 |\tEliminar un producto de un productor");
+            System.out.println();
+            System.out.println("\t| 5 |\tComprar un producto");
 
             opcion = scanner.nextInt();
 
@@ -108,6 +109,9 @@ public class Cooperativa {
                 case 4:
                     removeProductoMenu(scanner);
                     break;
+                case 5:
+                    menuComprarProducto(scanner);
+                    break;
                 default:
                     break;
             }
@@ -115,6 +119,267 @@ public class Cooperativa {
         } while (opcion != 9);
 
         scanner.close();
+    }
+
+    /**
+     * Menú para comprar un producto.
+     */
+    private static void menuComprarProducto(Scanner scanner) {
+        int numero;
+
+        do {
+            System.out.println("\tEscoger una opción:");
+            System.out.println();
+            System.out.println("\t| 1 |\tConsumidor final");
+            System.out.println("\t| 2 |\tDistribuidor");
+            System.out.println();
+            System.out.println("\t| 3 |\tVolver al menú principal");
+
+            numero = scanner.nextInt();
+
+            switch (numero) {
+                case 1:
+                    menuConsumidorFinal(scanner);
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    printMenuSelector();
+                    break;
+            }
+        } while (numero != 3);
+
+    }
+
+    private static void menuConsumidorFinal(Scanner scanner) {
+        int numero;
+
+        do {
+            System.out.println("\tEscoger una función:");
+            System.out.println();
+            System.out.println("\t| 1 |\tListado de consumidores finales");
+            System.out.println("\t| 2 |\tNuevo consumidor final");
+            System.out.println("\t| 3 |\tEscoger consumidor final");
+            System.out.println();
+            System.out.println("\t| 4 |\tVolver al menú principal");
+            System.out.println();
+
+            numero = scanner.nextInt();
+
+            switch (numero) {
+                case 1:
+                    printConsumidoresFinales();
+                    menuConsumidorFinal(scanner);
+                    break;
+                case 2:
+                    nuevoConsumidorFinal(scanner);
+                    break;
+                case 3:
+                    escogerConsumidorFinal(scanner);
+                    break;
+                default:
+                    break;
+            }
+
+        } while (numero != 4);
+    }
+
+    /**
+     * Elige un consumidor final existente para comprar un producto.
+     */
+    private static void escogerConsumidorFinal(Scanner scanner) {
+        int idConsumidorFinal;
+        int idEmpresaLog;
+        List<Integer> ids = new ArrayList<>();
+        List<Integer> idsEmpLog = new ArrayList<>();
+        String nombreProducto;
+        int cantidad;
+        ConsumidorFinal consumidor = null;
+        EmpresaLogistica empresa = null;
+        int dia;
+        int mes;
+        LocalDate fechaPedido;
+        LocalDate fechaEntrega;
+        int diasParaEnvio;
+
+        printConsumidoresFinales();
+
+        for (ConsumidorFinal c : Cooperativa.consumidoresFinales) {
+            ids.add(c.getId());
+        }
+
+        System.out.print("\tElegir ID del consumidor final: ");
+        idConsumidorFinal = scanner.nextInt();
+        while (!ids.contains(idConsumidorFinal)) {
+            System.out.print("\tID incorrecto. Elegir un ID válido: ");
+            idConsumidorFinal = scanner.nextInt();
+        }
+        for (ConsumidorFinal c : Cooperativa.consumidoresFinales) {
+            if (idConsumidorFinal == c.getId()) {
+                consumidor = c;
+                break;
+            }
+        }
+        System.out.println();
+
+        printProductoDisponible();
+
+        System.out.print("\tProducto que va a comprar:");
+        nombreProducto = scanner.next();
+        while (!Cooperativa.nombresProductos.contains(nombreProducto)) {
+            System.out.print("\tNombre inválido. Introducir un nombre válido: ");
+            nombreProducto = scanner.next();
+        }
+        System.out.println();
+
+        System.out.print("\tCantidad que va a comprar en kg (entre 1 y 100): ");
+        cantidad = scanner.nextInt();
+        while (cantidad < 1 || cantidad > 100) {
+            System.out.print("\tCantidad inválida. Introducir una cantidad válida: ");
+            cantidad = scanner.nextInt();
+        }
+        if (cantidad > Cooperativa.productoDisponible.get(nombreProducto) * 1000) {
+            System.out.println("\tNo hay tanto producto disponible.");
+            System.out.println();
+            menuConsumidorFinal(scanner);
+        }
+        System.out.println();
+
+        if (consumidor.getDistancia() <= 100) {
+            System.out.println("\tID   \tNombre de la empresa          \tGran logística");
+            System.out.println();
+            for (EmpresaLogistica e : Cooperativa.empresasLogisticas) {
+                System.out.printf("\t%05d\t%-30s\t%4.3f €/km y kg\n", e.getId(), e.getNombreEmpresa(),
+                        e.getPrecioKmGranLogistica());
+            }
+        } else {
+            System.out.println("\tID   \tNombre de la empresa          \tPeq. logística\tGran logística");
+            System.out.println();
+            for (EmpresaLogistica e : Cooperativa.empresasLogisticas) {
+                System.out.printf("\t%05d\t%-30s\t%14f\t%14f", e.getId(), e.getNombreEmpresa(),
+                        e.getPrecioKmPeqLogistica(), e.getPrecioKmGranLogistica());
+                idsEmpLog.add(e.getId());
+            }
+        }
+        System.out.println();
+
+        // Seguir aquí
+        System.out.print("\tSeleccionar ID de empresa: ");
+        idEmpresaLog = scanner.nextInt();
+        while (!idsEmpLog.contains(idEmpresaLog)) {
+            System.out.print("\tID inválido. Introducir un ID válido: ");
+            idEmpresaLog = scanner.nextInt();
+        }
+
+        for (EmpresaLogistica e : Cooperativa.empresasLogisticas) {
+            if (e.getId() == idEmpresaLog) {
+                empresa = e;
+                break;
+            }
+        }
+        System.out.println();
+
+        System.out.println("\tFecha de la compra (dentro de 2023)");
+        System.out.print("\tDía: ");
+        dia = scanner.nextInt();
+        System.out.println("\tMes: ");
+        mes = scanner.nextInt();
+
+        while (!checkFechaValida(dia, mes, 2023)) {
+            System.out.println("\tFecha incorrecta.");
+            System.out.print("\tDía: ");
+            dia = scanner.nextInt();
+            System.out.println("\tMes: ");
+            mes = scanner.nextInt();
+        }
+        fechaPedido = LocalDate.of(dia, mes, 2023);
+        System.out.println();
+
+        System.out.print("\tDías para enviar el producto (entre 0 y 20): ");
+        diasParaEnvio = scanner.nextInt();
+        while (diasParaEnvio < 0 || diasParaEnvio > 20) {
+            System.out.print("\tDías inválidos. Introducir entre 0 y 20: ");
+            diasParaEnvio = scanner.nextInt();
+        }
+        fechaEntrega = fechaPedido.plusDays(diasParaEnvio);
+        System.out.println();
+
+        Factura factura = new Factura(nombreProducto, empresa, consumidor, mes, fechaEntrega, diasParaEnvio);
+
+    }
+
+    private static boolean checkFechaValida(int dia, int mes, int anno) {
+        LocalDate fecha;
+        try {
+            fecha = LocalDate.of(anno, mes, dia);
+        } catch (DateTimeException e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Crea un nuevo consumidor final.
+     */
+    private static void nuevoConsumidorFinal(Scanner scanner) {
+        String nombre;
+        String apellido1;
+        String apellido2;
+        String dni;
+        int edad;
+        String sexo;
+        int distancia;
+        String direccion;
+        String codigoPostal;
+
+        System.out.print("\tNombre: ");
+        nombre = scanner.next();
+        System.out.print("\tApellido 1: ");
+        apellido1 = scanner.next();
+        System.out.print("\tApellido 2: ");
+        apellido2 = scanner.next();
+        System.out.print("\tDNI: ");
+        dni = scanner.next();
+        System.out.print("\tEdad: ");
+        edad = scanner.nextInt();
+        if (edad < 18) {
+            System.out.println("\tUn menor de edad no puede estar dado de alta en la cooperativa.");
+            System.out.println();
+            menuConsumidorFinal(scanner);
+        } else if (edad > 99) {
+            System.out.println("\tLa edad no puede ser mayor que 99. Se establecerá la edad en 99.");
+            edad = 99;
+        }
+        System.out.print("\tSexo (Hombre o Mujer): ");
+        sexo = scanner.next();
+        System.out.print("\tDistancia hasta la cooperativa: ");
+        distancia = scanner.nextInt();
+        if (distancia > 200) {
+            System.out.println("\tEl consumidor final no puede estar a más de 200km.");
+            System.out.println("\tLa distancia se ha establecido en 200km.");
+            distancia = 200;
+        }
+        System.out.print("\tDirección (Sólo la calle y el número): ");
+        direccion = scanner.next();
+        System.out.print("\tCódigo postal: ");
+        codigoPostal = scanner.next();
+
+        ConsumidorFinal c = new ConsumidorFinal(nombre, apellido1, apellido2, dni, edad, sexo, distancia, direccion,
+                codigoPostal);
+
+    }
+
+    /**
+     * Imprime los consumidores finales.
+     */
+    private static void printConsumidoresFinales() {
+        System.out.println("\tID   \tNombre  \tApellido\tDistancia");
+        System.out.println();
+        for (ConsumidorFinal c : Cooperativa.consumidoresFinales) {
+            System.out.printf("\t%05d\t%-8s\t%-8s\t%-3d km\n", c.getId(), c.getNombre(), c.getApellido1(),
+                    c.getDistancia());
+        }
+        System.out.println();
     }
 
     /**
@@ -139,7 +404,7 @@ public class Cooperativa {
                     removeProductoProductor(scanner);
                     break;
                 case 2:
-                    // removeProductoProductorFederado(scanner);
+                    removeProductoProductorFederado(scanner);
                     break;
                 default:
                     break;
@@ -152,13 +417,82 @@ public class Cooperativa {
     }
 
     /**
+     * Elimina un producto de un productor federado.
+     */
+    private static void removeProductoProductorFederado(Scanner scanner) {
+        String nombreProducto;
+        List<String> prodFedProductos = new ArrayList<>();
+        ProductorFederado prodFed = null;
+        int id;
+        List<Integer> ids = new ArrayList<>();
+        Persona persona = null;
+
+        System.out.println("\tProducto\tSuperficie");
+        System.out.println();
+        for (ProductorFederado p : Cooperativa.productoresFederados) {
+            System.out.printf("\t%-8s\t%.2f hectáreas", p.getNombreProducto(), p.getExtension());
+            System.out.println();
+            prodFedProductos.add(p.getNombreProducto());
+        }
+        System.out.println();
+
+        System.out.print("\tElegir un producto: ");
+        nombreProducto = scanner.next();
+        while (!prodFedProductos.contains(nombreProducto)) {
+            System.out.print("\tProducto incorrecto, introducir un producto válido: ");
+            nombreProducto = scanner.next();
+        }
+        System.out.println();
+
+        for (ProductorFederado p : Cooperativa.productoresFederados) {
+            if (p.getNombreProducto().equals(nombreProducto)) {
+                prodFed = p;
+                break;
+            }
+        }
+
+        for (Persona p : prodFed.getPropietarios()) {
+            ids.add(p.getId());
+        }
+
+        System.out.println("\tID   \tNombre\tApellido \tSuperficie");
+        System.out.println();
+        for (Producto prod : prodFed.getProductos()) {
+            System.out.printf("\t%05d\t%-6s\t%-9s\t%f hectáreas", prod.getPropietario().getId(),
+                    prod.getPropietario().getNombre(), prod.getPropietario().getApellido1(), prod.getExtension());
+            System.out.println();
+        }
+
+        System.out.print("\tElegir ID para eliminar: ");
+        id = scanner.nextInt();
+        while (!ids.contains(id)) {
+            System.out.print("\tID incorrecta, elegir un ID válido: ");
+            id = scanner.nextInt();
+        }
+
+        for (Persona p : prodFed.getPropietarios()) {
+            if (p.getId() == id) {
+                persona = p;
+            }
+        }
+
+        prodFed.removeProducto(persona);
+
+        System.out.println("\tLa persona " + id + " ya no forma parte del productor federado de " + nombreProducto);
+        System.out.println("\tEl producto ha desaparecido.");
+        System.out.println();
+
+        printMenuSelector();
+
+    }
+
+    /**
      * Elimina un producto de un productor.
      */
     private static void removeProductoProductor(Scanner scanner) {
         int id;
         Productor productor = null;
         String nombreProducto;
-        Producto prod = null;
 
         System.out.println("\tID   \tNombre  \tApellidos");
         System.out.println();
@@ -182,29 +516,27 @@ public class Cooperativa {
             }
         }
 
+        List<String> listaProductos = new ArrayList<>();
+
         System.out.println("\tEl productor tiene los siguentes productos:");
         for (Producto p : productor.getProductos()) {
             System.out.println("\t" + p.getNombreProducto() + " = " + p.getExtension() + " hectáreas");
+            listaProductos.add(p.getNombreProducto());
         }
         System.out.println();
         System.out.print("\tSeleccionar producto a eliminar: ");
         nombreProducto = scanner.next();
 
-        for (Producto producto : productor.getProductos()) {
-            if (producto.getNombreProducto().equals(nombreProducto)) {
-                prod = producto;
-            }
-        }
-
-        if (prod == null) { // Revisar!!!
-            System.out.print("\tNombre de producto incorrecto, introducir un nombre válido: ");
+        while (!listaProductos.contains(nombreProducto)) {
+            System.out.print("\tProducto incorrecto, introducir un producto válido: ");
             nombreProducto = scanner.next();
         }
 
         productor.removeProducto(nombreProducto);
 
         System.out.println();
-        System.out.println("El productor " + id + " ya no produce " + nombreProducto + ".");
+        System.out.println("\tEl productor " + id + " ya no produce " + nombreProducto + ".");
+        System.out.println();
 
         printMenuSelector();
 

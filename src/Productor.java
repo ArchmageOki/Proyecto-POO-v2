@@ -116,20 +116,15 @@ public class Productor {
      *                       por completo.
      */
     public void removeProducto(String nombreProducto) {
-        System.out.println("Extension antes de actualizar: " + this.extension);
         Iterator<Producto> iter = productos.iterator();
         while (iter.hasNext()) {
             Producto producto = iter.next();
             if (producto.getNombreProducto().equals(nombreProducto)) {
-                System.out.println("Nombre del producto: " + producto.getNombreProducto());
-                System.out.println(producto.toString());
-                System.out.println("Extension del objeto que se quita: " + producto.getExtension());
                 this.extension -= producto.getExtension();
                 Cooperativa.substractProductoDisponible(nombreProducto, producto.getExtension());
                 iter.remove();
             }
         }
-        System.out.println("Extension nueva: " + this.extension);
     }
 
     /**

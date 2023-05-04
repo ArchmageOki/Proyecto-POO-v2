@@ -1,5 +1,7 @@
 package src;
 
+import java.time.LocalDate;
+
 public class Distribuidor extends EntidadBase {
 
     private String cif;
@@ -80,7 +82,10 @@ public class Distribuidor extends EntidadBase {
      * @param kg             Kilogramos de producto.
      * @return True si se dan las condiciones adecuadas. False si no se cumplen.
      */
-    private boolean checkCondiciones(String nombreProducto, int kg) {
+    private boolean checkCondiciones(String nombreProducto, int kg, LocalDate fechaCompra) {
+        LocalDate fecha1 = LocalDate.of(2023, 1, 1);
+        LocalDate fecha2 = LocalDate.of(2023, 12, 31);
+
         if (!Cooperativa.nombresProductos.contains(nombreProducto)) {
             System.out.println("El producto no existe en la cooperativa.");
             return false;
@@ -90,6 +95,9 @@ public class Distribuidor extends EntidadBase {
         } else if (kg > Cooperativa.productoDisponible.get(nombreProducto) * 1000) {
             System.out.println("No hay suficiente producto disponible.");
             return false;
+        } else if(fechaCompra.isBefore(fecha1) || fechaCompra.isAfter(fecha2)) {
+            System.out.println("La fecha indicada no pertenece al año 2023");
+            return false;
         }
         return true;
     }
@@ -98,8 +106,8 @@ public class Distribuidor extends EntidadBase {
      * @param nombreProducto Producto a consultar.
      * @param kg             Kilogramos a consultar.
      */
-    public void comprobarPrecios(String nombreProducto, int kg) {
-        if (checkCondiciones(nombreProducto, kg)) {
+    public void comprobarPrecios(String nombreProducto, int kg, LocalDate fechaCompra) {
+        if (checkCondiciones(nombreProducto, kg, fechaCompra)) {
             double tonleadasDisponibles = Cooperativa.productoDisponible.get(nombreProducto);
             System.out.println(nombreProducto + ": " + tonleadasDisponibles + "toneladas");
             System.out.println();
@@ -253,9 +261,9 @@ public class Distribuidor extends EntidadBase {
      * @param kg             Cantidad que se quiere comprar.
      * @param empresa        Empresa que se va a encargar del transporte.
      */
-    public void comprarProducto(String nombreProducto, int kg, EmpresaLogistica empresa, int diasParaEnvio) {
-        if (checkCondiciones(nombreProducto, kg)) {
-            Cooperativa.facturas.add(new Factura(nombreProducto, empresa, this, kg, diasParaEnvio));
+    public void comprarProducto(String nombreProducto, int kg, EmpresaLogistica empresa, LocalDate fechaCompra, int diasParaEnvio) {
+        if (checkCondiciones(nombreProducto, kg, fechaCompra)) {
+            Cooperativa.facturas.add(new Factura(nombreProducto, empresa, this, kg, fechaCompra, diasParaEnvio));
         }
     }
 

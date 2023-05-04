@@ -93,6 +93,7 @@ public class ProductorFederado {
             crearProducto(this.nombreProducto, propietario, extension);
             this.propietarios.add(propietario);
             this.extension += extension;
+            this.extension = (double) Math.round(extension * 100) / 100;
 
             Cooperativa.addProductoDisponible(this.nombreProducto, extension);
         }

@@ -8,7 +8,7 @@ public class Persona extends EntidadBase {
     private int edad;
     private String sexo;
     private double dinero;
-    private static int contador = 0;
+    private static int contador = 1;
     private int id;
 
     /**
@@ -27,7 +27,7 @@ public class Persona extends EntidadBase {
         this.apellido1 = apellido1;
         this.apellido2 = apellido2;
         setDni(dni);
-        setEdad(edad);
+        this.edad = edad;
         setSexo(sexo);
         this.dinero = 0.0;
         this.dinero = (double) Math.round(dinero * 100 / 100);
@@ -145,22 +145,6 @@ public class Persona extends EntidadBase {
      */
     public int getEdad() {
         return this.edad;
-    }
-
-    /**
-     * @param edad La edad de la persona. Debe estar comprendida entre 18 y 99 años.
-     */
-    public void setEdad(int edad) {
-        this.edad = edad;
-        if (edad < 18) {
-            System.out.println("Un menor de edad no puede estar dado de alta.");
-            System.out.println("Se establecerá la edad en 18 años.");
-            this.edad = 18;
-        } else if (edad > 99) {
-            System.out.println("La edad no puede ser mayor a 100.");
-            System.out.println("Se establecerá la edad en 99 años.");
-            this.edad = 99;
-        }
     }
 
     /**

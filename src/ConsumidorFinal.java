@@ -1,5 +1,7 @@
 package src;
 
+import java.time.LocalDate;
+
 public class ConsumidorFinal extends Persona {
 
     private int distancia;
@@ -23,13 +25,7 @@ public class ConsumidorFinal extends Persona {
     public ConsumidorFinal(String nombre, String apellido1, String apellido2, String dni, int edad, String sexo,
             int distancia, String direccion, String codigoPostal) {
         super(nombre, apellido1, apellido2, dni, edad, sexo);
-        if (distancia > 200) {
-            System.out.println("El consumidor final no puede estar a más de 200km.");
-            System.out.println("La distancia se ha establecido en 200km.");
-            this.distancia = 200;
-        } else {
-            this.distancia = distancia;
-        }
+        this.distancia = distancia;
         this.direccion = direccion;
         this.codigoPostal = codigoPostal;
     }
@@ -63,8 +59,8 @@ public class ConsumidorFinal extends Persona {
      * @param nombreProducto Producto a consultar.
      * @param kg             Kilogramos a consultar.
      */
-    public void comprobarPrecios(String nombreProducto, int kg) {
-        if (checkCondiciones(nombreProducto, kg)) {
+    public void comprobarPrecios(String nombreProducto, int kg, LocalDate fechaCompra) {
+        if (checkCondiciones(nombreProducto, kg, fechaCompra)) {
             double toneladasDisponibles = Cooperativa.productoDisponible.get(nombreProducto);
             System.out.println(nombreProducto + ": " + toneladasDisponibles + " toneladas");
             System.out.println();
@@ -77,7 +73,10 @@ public class ConsumidorFinal extends Persona {
      * @param kg             Kilogramos de producto.
      * @return True si se dan las condiciones adecuadas. False si no se cumplen.
      */
-    private boolean checkCondiciones(String nombreProducto, int kg) {
+    private boolean checkCondiciones(String nombreProducto, int kg, LocalDate fechaCompra) {
+        LocalDate fecha1 = LocalDate.of(2023, 1, 1);
+        LocalDate fecha2 = LocalDate.of(2023, 12, 31);
+
         if (!Cooperativa.nombresProductos.contains(nombreProducto)) {
             System.out.println("El producto no existe en la cooperativa.");
             return false;
@@ -86,6 +85,9 @@ public class ConsumidorFinal extends Persona {
             return false;
         } else if (kg > Cooperativa.productoDisponible.get(nombreProducto) * 1000) {
             System.out.println("No hay suficiente producto disponible.");
+            return false;
+        } else if(fechaCompra.isBefore(fecha1) || fechaCompra.isAfter(fecha2)) {
+            System.out.println("La fecha indicada no pertenece al año 2023");
             return false;
         }
         return true;
@@ -237,9 +239,9 @@ public class ConsumidorFinal extends Persona {
      * @param kg             Cantidad que se quiere comprar.
      * @param empresa        Empresa que se va a encargar del transporte.
      */
-    public void comprarProducto(String nombreProducto, int kg, EmpresaLogistica empresa, int diasParaEnvio) {
-        if (checkCondiciones(nombreProducto, kg)) {
-            Cooperativa.facturas.add(new Factura(nombreProducto, empresa, this, kg, diasParaEnvio));
+    public void comprarProducto(String nombreProducto, int kg, EmpresaLogistica empresa, LocalDate fechaCompra, int diasParaEnvio) {
+        if (checkCondiciones(nombreProducto, kg, fechaCompra)) {
+            Cooperativa.facturas.add(new Factura(nombreProducto, empresa, this, kg, fechaCompra, diasParaEnvio));
         }
     }
 

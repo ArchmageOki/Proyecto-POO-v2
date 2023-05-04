@@ -18,7 +18,7 @@ public class Factura {
     private final LocalDate fechaCompra;
     private final LocalDate fechaEnvio;
 
-    public Factura(String nombreProducto, EmpresaLogistica empresa, EntidadBase comprador, int kg, int diasParaEnvio) {
+    public Factura(String nombreProducto, EmpresaLogistica empresa, EntidadBase comprador, int kg, LocalDate fechaCompra, int diasParaEnvio) {
 
         this.nombreProducto = nombreProducto;
         this.empresa = empresa;
@@ -29,7 +29,8 @@ public class Factura {
         this.valorPorKg = Cooperativa.getPrecioPorKg(this.nombreProducto);
         this.id = count;
         count++;
-        this.fechaCompra = Cooperativa.fechaActual;
+        this.fechaCompra = fechaCompra;
+
 
         diasParaEnvio = condicionesDiasEnvio(diasParaEnvio);
 
