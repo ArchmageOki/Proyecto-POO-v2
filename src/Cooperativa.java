@@ -142,7 +142,7 @@ public class Cooperativa {
                     menuConsumidorFinal(scanner);
                     break;
                 case 2:
-                    // menuDistribuidor(scanner);
+                    menuDistribuidor(scanner);
                     break;
                 case 3:
                     printMenuSelector();
@@ -172,12 +172,14 @@ public class Cooperativa {
 
             switch (numero) {
                 case 1:
-                    // printDistribuidores();
+                    printDistribuidores();
                     menuDistribuidor(scanner);
                     break;
                 case 2:
+                    nuevoDistribuidor(scanner);
                     break;
                 case 3:
+                    escogerDistribuidor(scanner);
                     break;
                 default:
                     numero = 4;
@@ -186,6 +188,171 @@ public class Cooperativa {
         } while (numero != 4);
 
         printMenuSelector();
+
+    }
+
+    /**
+     * Se elige el distribuidor que va a hacer la compra.
+     */
+    private static void escogerDistribuidor(Scanner scanner) {
+        int idDistribuidor;
+        int idEmpresaLog;
+        List<Integer> idDistribuidores = new ArrayList<>();
+        List<Integer> idEmpresasLog = new ArrayList<>();
+        Distribuidor distribuidor = null;
+        String nombreProducto;
+        int cantidad;
+        EmpresaLogistica empresa = null;
+        int dia;
+        int mes;
+        LocalDate fechaPedido;
+        int diasParaEnvio;
+        LocalDate fechaEntrega;
+
+        printDistribuidores();
+
+        for (Distribuidor d : Cooperativa.distribuidores) {
+            idDistribuidores.add(d.getId());
+        }
+
+        System.out.print("\tElegir ID del distribuidor: ");
+        idDistribuidor = scanner.nextInt();
+        while (!idDistribuidores.contains(idDistribuidor)) {
+            System.out.print("\tID incorrecto. Elegir un ID válido: ");
+            idDistribuidor = scanner.nextInt();
+        }
+        for (Distribuidor d : Cooperativa.distribuidores) {
+            if (idDistribuidor == d.getId()) {
+                distribuidor = d;
+                break;
+            }
+        }
+        System.out.println();
+
+        printProductoDisponible();
+
+        System.out.print("\tProducto que va a comprar: ");
+        nombreProducto = scanner.next();
+        while (!Cooperativa.nombresProductos.contains(nombreProducto)) {
+            System.out.print("\tNombre inválido. Introducir un nombre válido: ");
+            nombreProducto = scanner.next();
+        }
+        System.out.println();
+
+        System.out.print("\tCantidad que va a comprar en kg (mínimo 1000): ");
+        cantidad = scanner.nextInt();
+        while (cantidad < 1000) {
+            System.out.print("\tCantidad inválida. Introducir una cantidad válida: ");
+            cantidad = scanner.nextInt();
+        }
+        if (cantidad > Cooperativa.productoDisponible.get(nombreProducto) * 1000) {
+            System.out.println("\tNo hay tanto producto disponible.");
+            System.out.println();
+            menuDistribuidor(scanner);
+        }
+        System.out.println();
+
+        if (distribuidor.getDistancia() <= 100) {
+            System.out.println("\tID   \tNombre de la empresa          \tGran logística");
+            System.out.println();
+            for (EmpresaLogistica e : Cooperativa.empresasLogisticas) {
+                System.out.printf("\t%05d\t%-30s\t%4.3f €/km y kg\n", e.getId(), e.getNombreEmpresa(),
+                        e.getPrecioKmGranLogistica());
+                idEmpresasLog.add(e.getId());
+            }
+        } else {
+            System.out.println("\tID   \tNombre de la empresa          \tPeq. logística\tGran logística");
+            System.out.println();
+            for (EmpresaLogistica e : Cooperativa.empresasLogisticas) {
+                System.out.printf("\t%05d\t%-30s\t%9f €/km\t%14f\n", e.getId(), e.getNombreEmpresa(),
+                        e.getPrecioKmPeqLogistica(), e.getPrecioKmGranLogistica());
+                idEmpresasLog.add(e.getId());
+            }
+        }
+        System.out.println();
+
+        System.out.print("\tSeleccionar ID de empresa logística: ");
+        idEmpresaLog = scanner.nextInt();
+        while (!idEmpresasLog.contains(idEmpresaLog)) {
+            System.out.print("\tID inválido. Introducir un ID válido: ");
+            idEmpresaLog = scanner.nextInt();
+        }
+
+        for (EmpresaLogistica e : Cooperativa.empresasLogisticas) {
+            if (e.getId() == idEmpresaLog) {
+                empresa = e;
+                break;
+            }
+        }
+        System.out.println();
+
+        System.out.println("\tFecha de la compra (dentro de 2023)");
+        System.out.print("\tDía: ");
+        dia = scanner.nextInt();
+        System.out.print("\tMes: ");
+        mes = scanner.nextInt();
+
+        while (!checkFechaValida(2023, mes, dia)) {
+            System.out.println("\tFecha incorrecta.");
+            System.out.print("\tDía: ");
+            dia = scanner.nextInt();
+            System.out.println("\tMes: ");
+            mes = scanner.nextInt();
+        }
+        fechaPedido = LocalDate.of(2023, mes, dia);
+        System.out.println();
+
+        System.out.print("\tDías para enviar el producto (entre 0 y 20): ");
+        diasParaEnvio = scanner.nextInt();
+        while (diasParaEnvio < 0 || diasParaEnvio > 20) {
+            System.out.print("\tDías inválidos. Introducir entre 0 y 20: ");
+            diasParaEnvio = scanner.nextInt();
+        }
+        fechaEntrega = fechaPedido.plusDays(diasParaEnvio);
+        System.out.println();
+
+        // No se permiten compras inferiores a 1000kg...
+        Factura factura = new Factura(nombreProducto, empresa, distribuidor, mes, fechaPedido, fechaEntrega);
+
+    }
+
+    /**
+     * Crea un nuevo distribuidor.
+     */
+    private static void nuevoDistribuidor(Scanner scanner) {
+        String nombre;
+        String cif;
+        int distancia;
+        String direccion;
+        String codigoPostal;
+
+        System.out.print("\tNombre de la empresa: ");
+        nombre = scanner.next();
+        System.out.print("\tCIF: ");
+        cif = scanner.next();
+        System.out.print("\tDistancia hasta la cooperativa: ");
+        distancia = scanner.nextInt();
+        System.out.print("\tDirección (Sólo la calle y el número): ");
+        direccion = scanner.next();
+        System.out.print("\tCódigo postal: ");
+        codigoPostal = scanner.next();
+        System.out.println();
+
+        Distribuidor distribuidor = new Distribuidor(nombre, cif, distancia, direccion, codigoPostal);
+
+    }
+
+    /**
+     * Imprime la lista de distribuidores.
+     */
+    private static void printDistribuidores() {
+        System.out.println("\tID   \tNombre                        \tDistancia");
+        System.out.println();
+        for (Distribuidor d : Cooperativa.distribuidores) {
+            System.out.printf("\t%05d\t%-30s\t%-3d km\n", d.getId(), d.getNombre(),
+                    d.getDistancia());
+        }
+        System.out.println();
 
     }
 
@@ -235,8 +402,8 @@ public class Cooperativa {
     private static void escogerConsumidorFinal(Scanner scanner) {
         int idConsumidorFinal;
         int idEmpresaLog;
-        List<Integer> ids = new ArrayList<>();
-        List<Integer> idsEmpLog = new ArrayList<>();
+        List<Integer> idConsumidoresFinales = new ArrayList<>();
+        List<Integer> idEmpresasLog = new ArrayList<>();
         String nombreProducto;
         int cantidad;
         ConsumidorFinal consumidor = null;
@@ -250,12 +417,12 @@ public class Cooperativa {
         printConsumidoresFinales();
 
         for (ConsumidorFinal c : Cooperativa.consumidoresFinales) {
-            ids.add(c.getId());
+            idConsumidoresFinales.add(c.getId());
         }
 
         System.out.print("\tElegir ID del consumidor final: ");
         idConsumidorFinal = scanner.nextInt();
-        while (!ids.contains(idConsumidorFinal)) {
+        while (!idConsumidoresFinales.contains(idConsumidorFinal)) {
             System.out.print("\tID incorrecto. Elegir un ID válido: ");
             idConsumidorFinal = scanner.nextInt();
         }
@@ -296,22 +463,22 @@ public class Cooperativa {
             for (EmpresaLogistica e : Cooperativa.empresasLogisticas) {
                 System.out.printf("\t%05d\t%-30s\t%4.3f €/km y kg\n", e.getId(), e.getNombreEmpresa(),
                         e.getPrecioKmGranLogistica());
-                idsEmpLog.add(e.getId());
+                idEmpresasLog.add(e.getId());
             }
         } else {
             System.out.println("\tID   \tNombre de la empresa          \tPeq. logística\tGran logística");
             System.out.println();
             for (EmpresaLogistica e : Cooperativa.empresasLogisticas) {
-                System.out.printf("\t%05d\t%-30s\t%14f\t%14f", e.getId(), e.getNombreEmpresa(),
+                System.out.printf("\t%05d\t%-30s\t%9f €/km\t%4.3f €/km y kg\n", e.getId(), e.getNombreEmpresa(),
                         e.getPrecioKmPeqLogistica(), e.getPrecioKmGranLogistica());
-                idsEmpLog.add(e.getId());
+                idEmpresasLog.add(e.getId());
             }
         }
         System.out.println();
 
-        System.out.print("\tSeleccionar ID de empresa: ");
+        System.out.print("\tSeleccionar ID de empresa logística: ");
         idEmpresaLog = scanner.nextInt();
-        while (!idsEmpLog.contains(idEmpresaLog)) {
+        while (!idEmpresasLog.contains(idEmpresaLog)) {
             System.out.print("\tID inválido. Introducir un ID válido: ");
             idEmpresaLog = scanner.nextInt();
         }
@@ -353,6 +520,12 @@ public class Cooperativa {
 
     }
 
+    /**
+     * @param anno Año de la fecha a comprobar.
+     * @param mes  Mes de la fecha a comprobar.
+     * @param dia  Dia de la fecha a comprobar.
+     * @return True si la fecha es válida. False si la fecha es inválida.
+     */
     private static boolean checkFechaValida(int anno, int mes, int dia) {
         LocalDate fecha;
         try {

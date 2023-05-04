@@ -8,6 +8,8 @@ public class Distribuidor extends EntidadBase {
     private int distancia;
     private String direccion;
     private String codigoPostal;
+    private static int count = 1;
+    private int id;
 
     /**
      * @param nombre       Nombre de la empresa.
@@ -23,8 +25,17 @@ public class Distribuidor extends EntidadBase {
         this.distancia = distancia;
         this.direccion = direccion;
         this.codigoPostal = codigoPostal;
+        this.id = Distribuidor.count;
+        Distribuidor.count++;
 
         Cooperativa.addDistribuidor(this);
+    }
+
+    /**
+     * @return ID del distribuidor.
+     */
+    public int getId() {
+        return this.id;
     }
 
     /**
