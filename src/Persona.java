@@ -1,5 +1,8 @@
 package src;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Persona extends EntidadBase {
 
     private String apellido1;
@@ -10,6 +13,7 @@ public class Persona extends EntidadBase {
     private double dinero;
     private static int contador = 1;
     private int id;
+    public Map<String, Double> ventasRealizadas = new HashMap<>();
 
     /**
      * @param nombre    El nombre de la persona.
@@ -35,6 +39,13 @@ public class Persona extends EntidadBase {
         Persona.contador++;
 
         addToCooperativa();
+    }
+
+    /**
+     * @return Mapa con las ventas realizadas y el valor de las ganancias.
+     */
+    public Map<String, Double> getVentasRealizadas() {
+        return ventasRealizadas;
     }
 
     /**

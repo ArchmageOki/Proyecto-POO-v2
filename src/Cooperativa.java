@@ -135,10 +135,137 @@ public class Cooperativa {
         do {
             System.out.println("\tEscoger una opción:");
             System.out.println();
-            System.out.println("\t| 1 |\tBeneficios por producto de la cooperativa");
-            System.out.println("\t| 2 |\t"); // Seguir aquí
+            System.out.println("\t| 1 |\tVentas de cada producto en un periodo");
+            System.out.println("\t| 2 |\tGanancias de cada productor desgloasadas");
+            System.out.println("\t| 3 |\tGanancias de las empresas logísticas");
+            System.out.println("\t| 4 |\tBeneficios de la cooperativa desglosados");
+            System.out.println("\t| 5 |\tEvolución de los precios de los productos");
+            System.out.println();
+            System.out.println("\t| 6 |\tResumen del año");
+            System.out.println();
+            System.out.println("\t| 7 |\tVolver al menú principal");
+            System.out.println();
+
+            System.out.println("\t> ");
+
+            numero = scanner.nextInt();
+
+            switch (numero) {
+                case 1:
+                    ventasProductoPeriodo(scanner);
+                    break;
+                case 2:
+                    gananciasPorProductor(scanner);
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                default:
+                    numero = 7;
+                    break;
+            }
 
         } while (numero != 7);
+
+        printMenuSelector();
+    }
+
+    /**
+     * Imprime las ganancias por productor.
+     */
+    private static void gananciasPorProductor(Scanner scanner) {
+
+        for (Persona p : personas) {
+            System.out.println("\t" + p.getNombre() + " " + p.getApellido1());
+            double total = 0;
+            for (Map.Entry<String, Double> entry : p.getVentasRealizadas().entrySet()) {
+                total += (Math.round(entry.getValue() * 100.0) / 100.0);
+                System.out.println(
+                        "\t\t" + entry.getKey() + " = " + (Math.round(entry.getValue() * 100.0) / 100.0) + " €");
+            }
+            total = (double) (Math.round(total * 100.0) / 100.0);
+            System.out.println();
+            System.out.println("\t\tTotal = " + total + " €");
+            System.out.println();
+        }
+    }
+
+    /**
+     * Ventas de la cooperativa en un periodo de tiempo.
+     */
+    private static void ventasProductoPeriodo(Scanner scanner) {
+        int diaInicio;
+        int mesInicio;
+        LocalDate fechaInicio;
+        int diaFin;
+        int mesFin;
+        LocalDate fechaFin;
+        Map<String, Integer> ventas = new HashMap<>();
+
+        System.out.println("\tSe mostrarán las ventas de un producto en el periodo que se introduzca a continuación.");
+        System.out.println("\tSe tendrá en cuenta la FECHA DE LA ENTREGA.");
+        System.out.println();
+
+        System.out.println("\tEstablecer fecha de inicio:");
+        System.out.print("\t\tDia: ");
+        diaInicio = scanner.nextInt();
+        System.out.print("\t\tMes: ");
+        mesInicio = scanner.nextInt();
+        while (!checkFechaValida(2023, mesInicio, diaInicio)) {
+            System.out.println("\tLa fecha introducida es inválida. Introducir una fecha válida:");
+            System.out.print("\t\tDia: ");
+            diaInicio = scanner.nextInt();
+            System.out.print("\t\tMes: ");
+            mesInicio = scanner.nextInt();
+        }
+        fechaInicio = LocalDate.of(2023, mesInicio, diaInicio);
+        System.out.println();
+
+        System.out.println("\tEstablecer fecha de final:");
+        System.out.print("\t\tDia: ");
+        diaFin = scanner.nextInt();
+        System.out.print("\t\tMes: ");
+        mesFin = scanner.nextInt();
+        while (!checkFechaValida(2023, mesFin, diaFin)) {
+            System.out.println("\tLa fecha introducida es inválida. Introducir una fecha válida:");
+            System.out.print("\t\tDia: ");
+            diaFin = scanner.nextInt();
+            System.out.print("\t\tMes: ");
+            mesFin = scanner.nextInt();
+        }
+        fechaFin = LocalDate.of(2023, mesFin, diaFin);
+        System.out.println();
+
+        if (fechaInicio.isAfter(fechaFin)) {
+            System.out.println("\tLa fecha de inicio es posterior a la fecha de fin.");
+            System.out.println();
+            menuDatosAnalisis(scanner);
+        }
+
+        for (Factura f : facturas) {
+            if (f.getFechaEntrega().isAfter(fechaInicio) && f.getFechaEntrega().isBefore(fechaFin)) {
+                ventas.merge(f.getNombreProducto(), f.getKg(), Integer::sum);
+            }
+        }
+
+        if (ventas.isEmpty()) {
+            System.out.println("\tNo hay ventas entre las fechas seleccionadas.");
+            System.out.println();
+            menuDatosAnalisis(scanner);
+        }
+
+        System.out.println("\tVentas entre " + fechaInicio + " y " + fechaFin + ":");
+        System.out.println();
+        for (Map.Entry<String, Integer> entry : ventas.entrySet()) {
+            System.out.printf("\t%10s = %6d kg.\n", entry.getKey(), entry.getValue());
+        }
+        System.out.println();
+
+        menuDatosAnalisis(scanner);
     }
 
     /**
@@ -331,7 +458,6 @@ public class Cooperativa {
         fechaEntrega = fechaPedido.plusDays(diasParaEnvio);
         System.out.println();
 
-        // No se permiten compras inferiores a 1000kg...
         Factura factura = new Factura(nombreProducto, empresa, distribuidor, cantidad, fechaPedido, fechaEntrega);
 
     }
@@ -1117,6 +1243,7 @@ public class Cooperativa {
      * consumidores finales, distribuidores y empresas logísticas.
      */
     private static void initMain() {
+        LocalDate fechaPrueba = LocalDate.of(2023, 5, 27);
 
         // Personas.
         Persona persona = new Persona("Juanma", "Garrido", "Aguilera", "73433769J", 27, "Hombre");
@@ -1226,6 +1353,19 @@ public class Cooperativa {
         EmpresaLogistica empresa3 = new EmpresaLogistica("La Navarra transportes S.L.", 0.055, 0.015);
         EmpresaLogistica empresa4 = new EmpresaLogistica("Carioca trailers S.A.", 0.061, 0.009);
         EmpresaLogistica empresa5 = new EmpresaLogistica("Ángel y asociados S.L.", 0.048, 0.018);
+
+        // Facturas
+        Factura factura = new Factura("Aceite", empresa2, distribuidor5, 1200, fechaPrueba, fechaPrueba);
+        Factura factura2 = new Factura("Lechuga", empresa1, distribuidor4, 1500, fechaPrueba, fechaPrueba);
+        Factura factura3 = new Factura("Garbanzo", empresa3, distribuidor3, 2000, fechaPrueba, fechaPrueba);
+        Factura factura4 = new Factura("Maiz", empresa5, distribuidor2, 1300, fechaPrueba, fechaPrueba);
+        Factura factura5 = new Factura("Patata", empresa4, distribuidor, 1000, fechaPrueba, fechaPrueba);
+
+        Factura factura6 = new Factura("Avellana", empresa1, consumidor, 35, fechaPrueba, fechaPrueba);
+        Factura factura7 = new Factura("Naranja", empresa2, consumidor2, 85, fechaPrueba, fechaPrueba);
+        Factura factura8 = new Factura("Pepino", empresa3, consumidor3, 40, fechaPrueba, fechaPrueba);
+        Factura factura9 = new Factura("Trigo", empresa4, consumidor5, 70, fechaPrueba, fechaPrueba);
+        Factura factura10 = new Factura("Fresa", empresa5, consumidor4, 15, fechaPrueba, fechaPrueba);
 
     }
 
@@ -1548,6 +1688,20 @@ public class Cooperativa {
         return 0;
     }
 
+    public static void pagarEmpresaLogistica(int id) {
+        Factura factura = null;
+        EmpresaLogistica empresa = null;
+        for (Factura f : facturas) {
+            if (f.getId() == id) {
+                factura = f;
+                empresa = f.getEmpresa();
+                break;
+            }
+        }
+
+        empresa.addDinero(factura.getDineroEmpresaLogistica());
+    }
+
     /**
      * @param id ID de la factura.
      */
@@ -1559,6 +1713,7 @@ public class Cooperativa {
             if (facturaAux.getId() == id) {
                 factura = facturaAux;
                 nombreProducto = facturaAux.getNombreProducto();
+                break;
             }
         }
         if (nombreProducto == null && factura == null) {
@@ -1596,6 +1751,7 @@ public class Cooperativa {
                 double hectareasPersona = pagos.get(persona);
                 double parteAPagar = (hectareasPersona * dineroARepartir) / hectareasTotales;
                 persona.addDinero(parteAPagar);
+                persona.ventasRealizadas.merge(nombreProducto, parteAPagar, Double::sum);
             }
 
             double beneficiosCooperativa = Cooperativa.getPrecioTotalCooperativa(id);

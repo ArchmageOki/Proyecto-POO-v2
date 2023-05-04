@@ -7,6 +7,7 @@ public class EmpresaLogistica {
     private double precioKmPeqLogistica;
     private static int contador = 1;
     private int id;
+    private double dinero;
 
     /**
      * @param nombreEmpresa         Nombre de la empresa logística.
@@ -21,6 +22,20 @@ public class EmpresaLogistica {
         EmpresaLogistica.contador++;
 
         Cooperativa.addEmpresaLogistica(this);
+    }
+
+    /**
+     * @param dinero Añade dinero a la empresa logística.
+     */
+    public void addDinero (double dinero) {
+        this.dinero += dinero;
+    }
+
+    /**
+     * @return Dinero de la empresa logística.
+     */
+    public double getDinero() {
+        return this.dinero;
     }
 
     /**

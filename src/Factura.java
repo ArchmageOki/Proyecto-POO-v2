@@ -17,8 +17,10 @@ public class Factura {
     private final int id;
     private final LocalDate fechaCompra;
     private final LocalDate fechaEntrega;
+    private double dineroEmpresaLogistica;
 
-    public Factura(String nombreProducto, EmpresaLogistica empresa, EntidadBase comprador, int kg, LocalDate fechaPedido, LocalDate fechaEntrega) {
+    public Factura(String nombreProducto, EmpresaLogistica empresa, EntidadBase comprador, int kg,
+            LocalDate fechaPedido, LocalDate fechaEntrega) {
 
         this.nombreProducto = nombreProducto;
         this.empresa = empresa;
@@ -42,6 +44,35 @@ public class Factura {
         // Asociar los pagos que se hacen con las personas que los producen.
 
         Cooperativa.pagarProductores(this.id);
+        Cooperativa.pagarEmpresaLogistica(this.id);
+    }
+
+    /**
+     * @return Kg que se compran.
+     */
+    public int getKg() {
+        return kg;
+    }
+
+    /**
+     * @return Fecha de la compra.
+     */
+    public LocalDate getFechaCompra() {
+        return fechaCompra;
+    }
+
+    /**
+     * @return Fecha de la entrega.
+     */
+    public LocalDate getFechaEntrega() {
+        return fechaEntrega;
+    }
+
+    /**
+     * @return Dinero que ganará la empresa logística.
+     */
+    public double getDineroEmpresaLogistica() {
+        return this.dineroEmpresaLogistica;
     }
 
     /**
@@ -261,6 +292,8 @@ public class Factura {
         System.out.println("\t|                                      |");
         System.out.println("\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.println();
+
+        this.dineroEmpresaLogistica = precioTotalLogistica;
     }
 
     /**

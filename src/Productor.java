@@ -13,19 +13,15 @@ public class Productor {
     private boolean esGranProductor;
 
     public Productor(String nombreProducto, Persona propietario, double extension) {
-        if (!Cooperativa.nombresProductos.contains(nombreProducto)) {
-            System.out.println("El producto no existe.");
-        } else {
-            this.propietario = propietario;
-            this.balance = 0;
-            productos = new ArrayList<>();
-            crearProducto(nombreProducto, extension);
-            Cooperativa.addProductoDisponible(nombreProducto, extension);
-            this.extension = extension;
-            setEsGranProductor();
+        this.propietario = propietario;
+        this.balance = 0;
+        productos = new ArrayList<>();
+        crearProducto(nombreProducto, extension);
+        Cooperativa.addProductoDisponible(nombreProducto, extension);
+        this.extension = extension;
+        setEsGranProductor();
 
-            Cooperativa.addProductor(this);
-        }
+        Cooperativa.addProductor(this);
     }
 
     /**
@@ -34,7 +30,7 @@ public class Productor {
     public int getId() {
         return this.propietario.getId();
     }
-    
+
     /**
      * @return Persona dueña del conjunto de cultivos.
      */
