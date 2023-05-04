@@ -93,6 +93,8 @@ public class Cooperativa {
             System.out.println("\t| 4 |\tEliminar un producto de un productor");
             System.out.println();
             System.out.println("\t| 5 |\tComprar un producto");
+            System.out.println();
+            System.out.println("\t| 6 |\tDatos de análisis");
 
             opcion = scanner.nextInt();
 
@@ -112,6 +114,9 @@ public class Cooperativa {
                 case 5:
                     menuComprarProducto(scanner);
                     break;
+                case 6:
+                    menuDatosAnalisis(scanner);
+                    break;
                 default:
                     break;
             }
@@ -119,6 +124,21 @@ public class Cooperativa {
         } while (opcion != 9);
 
         scanner.close();
+    }
+
+    /**
+     * Menú para seleccionar los datos de análisis.
+     */
+    private static void menuDatosAnalisis(Scanner scanner) {
+        int numero;
+
+        do {
+            System.out.println("\tEscoger una opción:");
+            System.out.println();
+            System.out.println("\t| 1 |\tBeneficios por producto de la cooperativa");
+            System.out.println("\t| 2 |\t"); // Seguir aquí
+
+        } while (numero != 7);
     }
 
     /**
@@ -312,7 +332,7 @@ public class Cooperativa {
         System.out.println();
 
         // No se permiten compras inferiores a 1000kg...
-        Factura factura = new Factura(nombreProducto, empresa, distribuidor, mes, fechaPedido, fechaEntrega);
+        Factura factura = new Factura(nombreProducto, empresa, distribuidor, cantidad, fechaPedido, fechaEntrega);
 
     }
 
@@ -516,7 +536,7 @@ public class Cooperativa {
         fechaEntrega = fechaPedido.plusDays(diasParaEnvio);
         System.out.println();
 
-        Factura factura = new Factura(nombreProducto, empresa, consumidor, mes, fechaPedido, fechaEntrega);
+        Factura factura = new Factura(nombreProducto, empresa, consumidor, cantidad, fechaPedido, fechaEntrega);
 
     }
 
