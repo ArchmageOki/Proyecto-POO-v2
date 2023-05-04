@@ -142,6 +142,7 @@ public class Cooperativa {
                     menuConsumidorFinal(scanner);
                     break;
                 case 2:
+                    // menuDistribuidor(scanner);
                     break;
                 case 3:
                     printMenuSelector();
@@ -151,6 +152,46 @@ public class Cooperativa {
 
     }
 
+    /**
+     * Imprime el menú de consumidor final.
+     */
+    private static void menuDistribuidor(Scanner scanner) {
+        int numero;
+
+        do {
+            System.out.println("\tEscoger una función:");
+            System.out.println();
+            System.out.println("\t| 1 |\tListado de distribuidores");
+            System.out.println("\t| 2 |\tNuevo distribuidor");
+            System.out.println("\t| 3 |\tEscoger distribuidor");
+            System.out.println();
+            System.out.println("\t| 4 |\tVolver al menú principal");
+            System.out.println();
+
+            numero = scanner.nextInt();
+
+            switch (numero) {
+                case 1:
+                    // printDistribuidores();
+                    menuDistribuidor(scanner);
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                default:
+                    numero = 4;
+                    break;
+            }
+        } while (numero != 4);
+
+        printMenuSelector();
+
+    }
+
+    /**
+     * Imprime el menú de consumidor final.
+     */
     private static void menuConsumidorFinal(Scanner scanner) {
         int numero;
 
@@ -178,10 +219,14 @@ public class Cooperativa {
                     escogerConsumidorFinal(scanner);
                     break;
                 default:
+                    numero = 4;
                     break;
             }
 
         } while (numero != 4);
+
+        printMenuSelector();
+
     }
 
     /**
@@ -224,7 +269,7 @@ public class Cooperativa {
 
         printProductoDisponible();
 
-        System.out.print("\tProducto que va a comprar:");
+        System.out.print("\tProducto que va a comprar: ");
         nombreProducto = scanner.next();
         while (!Cooperativa.nombresProductos.contains(nombreProducto)) {
             System.out.print("\tNombre inválido. Introducir un nombre válido: ");
@@ -251,6 +296,7 @@ public class Cooperativa {
             for (EmpresaLogistica e : Cooperativa.empresasLogisticas) {
                 System.out.printf("\t%05d\t%-30s\t%4.3f €/km y kg\n", e.getId(), e.getNombreEmpresa(),
                         e.getPrecioKmGranLogistica());
+                idsEmpLog.add(e.getId());
             }
         } else {
             System.out.println("\tID   \tNombre de la empresa          \tPeq. logística\tGran logística");
@@ -263,7 +309,6 @@ public class Cooperativa {
         }
         System.out.println();
 
-        // Seguir aquí
         System.out.print("\tSeleccionar ID de empresa: ");
         idEmpresaLog = scanner.nextInt();
         while (!idsEmpLog.contains(idEmpresaLog)) {
@@ -282,17 +327,17 @@ public class Cooperativa {
         System.out.println("\tFecha de la compra (dentro de 2023)");
         System.out.print("\tDía: ");
         dia = scanner.nextInt();
-        System.out.println("\tMes: ");
+        System.out.print("\tMes: ");
         mes = scanner.nextInt();
 
-        while (!checkFechaValida(dia, mes, 2023)) {
+        while (!checkFechaValida(2023, mes, dia)) {
             System.out.println("\tFecha incorrecta.");
             System.out.print("\tDía: ");
             dia = scanner.nextInt();
             System.out.println("\tMes: ");
             mes = scanner.nextInt();
         }
-        fechaPedido = LocalDate.of(dia, mes, 2023);
+        fechaPedido = LocalDate.of(2023, mes, dia);
         System.out.println();
 
         System.out.print("\tDías para enviar el producto (entre 0 y 20): ");
@@ -304,11 +349,11 @@ public class Cooperativa {
         fechaEntrega = fechaPedido.plusDays(diasParaEnvio);
         System.out.println();
 
-        Factura factura = new Factura(nombreProducto, empresa, consumidor, mes, fechaEntrega, diasParaEnvio);
+        Factura factura = new Factura(nombreProducto, empresa, consumidor, mes, fechaPedido, fechaEntrega);
 
     }
 
-    private static boolean checkFechaValida(int dia, int mes, int anno) {
+    private static boolean checkFechaValida(int anno, int mes, int dia) {
         LocalDate fecha;
         try {
             fecha = LocalDate.of(anno, mes, dia);

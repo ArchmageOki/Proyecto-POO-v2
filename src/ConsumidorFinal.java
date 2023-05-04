@@ -235,17 +235,6 @@ public class ConsumidorFinal extends Persona {
     }
 
     /**
-     * @param nombreProducto Nombre del producto que se va a comprar.
-     * @param kg             Cantidad que se quiere comprar.
-     * @param empresa        Empresa que se va a encargar del transporte.
-     */
-    public void comprarProducto(String nombreProducto, int kg, EmpresaLogistica empresa, LocalDate fechaCompra, int diasParaEnvio) {
-        if (checkCondiciones(nombreProducto, kg, fechaCompra)) {
-            Cooperativa.facturas.add(new Factura(nombreProducto, empresa, this, kg, fechaCompra, diasParaEnvio));
-        }
-    }
-
-    /**
      * No hace nada.
      */
     @Override
