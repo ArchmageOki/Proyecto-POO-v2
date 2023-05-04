@@ -1,6 +1,7 @@
 package src;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
@@ -67,4 +68,37 @@ public class ProdAvena extends Producto {
     public static double getValorPorKg() {
         return ProdAvena.valorPorKg;
     }
+    
+    /**
+     * Imprime el precio histórico ordenado por fechas.
+     */
+    public static void printPrecioHistorico() {
+        double max;
+        double min;
+        LocalDate maxFecha = null;
+        LocalDate minFecha = null;
+
+        max = Collections.max(precioHistorico.values());
+        max = (double) (Math.round(max * 100.0) / 100.0);
+        min = Collections.min(precioHistorico.values());
+        min = (double) (Math.round(min * 100.0) / 100.0);
+
+        for (Map.Entry<LocalDate, Double> entry : precioHistorico.entrySet()) {
+            System.out.printf("\t%-10s\t%-5.2f €\n", entry.getKey(), entry.getValue());
+        }
+        System.out.println();
+
+        for (Map.Entry<LocalDate, Double> entry : precioHistorico.entrySet()) {
+            if (entry.getValue() == max) {
+                maxFecha = entry.getKey();
+            } else if (entry.getValue() == min) {
+                minFecha = entry.getKey();
+            }
+        }
+
+        System.out.println("\tPrecio máximo: " + maxFecha + " = " + max + " €");
+        System.out.println("\tPrecio mínimo: " + minFecha + " = " + min + " €");
+        System.out.println();
+    }
+
 }

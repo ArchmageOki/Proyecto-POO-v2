@@ -29,7 +29,7 @@ public class Cooperativa {
     public static List<Distribuidor> distribuidores = new ArrayList<>();
     public static List<Factura> facturas = new ArrayList<>();
 
-    public static Map<String, Double> productoDisponible = new HashMap<>();
+    public static Map<String, Double> productoDisponible = new HashMap<>(); // Está en toneladas.
 
     static {
         productoDisponible = new HashMap<>();
@@ -49,6 +49,8 @@ public class Cooperativa {
      * @param args Argumentos.
      */
     public static void main(String args[]) {
+
+        System.setProperty("console.encoding", "UTF-8");
 
         initMain();
 
@@ -158,10 +160,13 @@ public class Cooperativa {
                     gananciasPorProductor(scanner);
                     break;
                 case 3:
+                    gananciasEmpresasLogisticas(scanner);
                     break;
                 case 4:
+                    beneficiosCooperativaDesglosados(scanner);
                     break;
                 case 5:
+                    evolucionPreciosProductos(scanner);
                     break;
                 case 6:
                 default:
@@ -172,6 +177,107 @@ public class Cooperativa {
         } while (numero != 7);
 
         printMenuSelector();
+    }
+
+    /**
+     * Imprime la evolución de los precios de los productos.
+     */
+    private static void evolucionPreciosProductos(Scanner scanner) {
+        String nombreProducto;
+
+        System.out.print("\tElegir el nombre del producto a consultar: ");
+        nombreProducto = scanner.next();
+        while (!nombresProductos.contains(nombreProducto)) {
+            System.out.print("\tEl producto no es válido. Introducir un producto válido: ");
+            nombreProducto = scanner.next();
+        }
+        System.out.println();
+
+        switch (nombreProducto) {
+            case "Aceite":
+                ProdAceite.printPrecioHistorico();
+                break;
+            case "Aceituna":
+                ProdAceite.printPrecioHistorico();
+                break;
+            case "Avellana":
+                ProdAceite.printPrecioHistorico();
+                break;
+            case "Avena":
+                ProdAceite.printPrecioHistorico();
+                break;
+            case "Fresa":
+                ProdAceite.printPrecioHistorico();
+                break;
+            case "Garbanzo":
+                ProdAceite.printPrecioHistorico();
+                break;
+            case "Girasol":
+                ProdAceite.printPrecioHistorico();
+                break;
+            case "Lechuga":
+                ProdAceite.printPrecioHistorico();
+                break;
+            case "Maiz":
+                ProdAceite.printPrecioHistorico();
+                break;
+            case "Naranja":
+                ProdAceite.printPrecioHistorico();
+                break;
+            case "Patata":
+                ProdAceite.printPrecioHistorico();
+                break;
+            case "Pepino":
+                ProdAceite.printPrecioHistorico();
+                break;
+            case "Tomate":
+                ProdAceite.printPrecioHistorico();
+                break;
+            case "Trigo":
+                ProdAceite.printPrecioHistorico();
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    /**
+     * Imprime los beneficios de la empresa desglosados por productos.
+     */
+    private static void beneficiosCooperativaDesglosados(Scanner scanner) {
+        double total = 0;
+
+        Map<String, Double> dineroProductos = new HashMap<>();
+        for (Factura f : facturas) {
+            dineroProductos.merge(f.getNombreProducto(), f.getDineroCooperativa(), Double::sum);
+        }
+
+        System.out.println("\tS. Coop. Juan Manuel Garrido");
+        System.out.println();
+        System.out.println("\tProducto  \tBeneficio");
+        System.out.println();
+        for (Map.Entry<String, Double> entry : dineroProductos.entrySet()) {
+            System.out.printf("\t%-10s\t%-5.2f €\n", entry.getKey(), entry.getValue());
+            total += entry.getValue();
+        }
+        System.out.println();
+        System.out.printf("\tTotal     \t%-5.2f €\n", total);
+        System.out.println();
+
+    }
+
+    /**
+     * Imprime las ganancias de las empresas logísticas.
+     */
+    private static void gananciasEmpresasLogisticas(Scanner scanner) {
+        System.out.println("\tNombre de la empresa          \tGanancias");
+        System.out.println();
+
+        for (EmpresaLogistica e : empresasLogisticas) {
+            System.out.printf("\t%-30s\t%.2f €\n", e.getNombreEmpresa(), e.getDinero());
+        }
+        System.out.println();
     }
 
     /**

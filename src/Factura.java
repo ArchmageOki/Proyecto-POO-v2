@@ -18,6 +18,7 @@ public class Factura {
     private final LocalDate fechaCompra;
     private final LocalDate fechaEntrega;
     private double dineroEmpresaLogistica;
+    private double dineroCooperativa;
 
     public Factura(String nombreProducto, EmpresaLogistica empresa, EntidadBase comprador, int kg,
             LocalDate fechaPedido, LocalDate fechaEntrega) {
@@ -38,6 +39,7 @@ public class Factura {
         calcularPeqLogistica();
 
         printFactura();
+        restarCantidadProducto();
 
         Cooperativa.addFactura(this);
 
@@ -45,6 +47,21 @@ public class Factura {
 
         Cooperativa.pagarProductores(this.id);
         Cooperativa.pagarEmpresaLogistica(this.id);
+    }
+
+    /**
+     * Resta la cantidad comprada al total de la cooperativa.
+     */
+    private void restarCantidadProducto() {
+        // Seguir aquí
+        Cooperativa.productoDisponible.merge(nombreProducto, -((double) kg * 1000.0) , Double::sum);
+    }
+
+    /**
+     * @return Dinero que se lleva la cooperativa.
+     */
+    public double getDineroCooperativa() {
+        return dineroCooperativa;
     }
 
     /**
@@ -383,8 +400,10 @@ public class Factura {
      */
     public double getPrecioCooperativa() {
         if (comprador instanceof ConsumidorFinal) {
+            dineroCooperativa = (valorPorKg * kg * 1.15) - (valorPorKg * kg);
             return valorPorKg * kg * 1.15;
         } else {
+            dineroCooperativa = (valorPorKg * kg * 1.05) - (valorPorKg * kg);
             return valorPorKg * kg * 1.05;
         }
     }
