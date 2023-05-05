@@ -32,11 +32,11 @@ public class Factura {
         this.tramosPeqLogistica = new ArrayList<>();
         this.comprador = comprador;
         this.kg = kg;
-        this.valorPorKg = Cooperativa.getPrecioPorKg(this.nombreProducto);
         this.id = count;
         count++;
         this.fechaCompra = fechaPedido;
         this.fechaEntrega = fechaEntrega;
+        this.valorPorKg = Cooperativa.getPrecioPorKg(this.nombreProducto, this.fechaEntrega);
 
         calcularGranLogistica();
         calcularPeqLogistica();

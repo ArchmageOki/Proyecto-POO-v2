@@ -65,8 +65,18 @@ public class ProdTomate extends Producto {
     /**
      * @return El valor por kilogramo del producto.
      */
-    public static double getValorPorKg() {
-        return ProdTomate.valorPorKg;
+    public static double getValorPorKg(LocalDate fechaSuministro) {
+        Map<LocalDate, Double> fechaAlReves = ((TreeMap) precioHistorico).descendingMap();
+        double valorPorKgEsteDia = 0.0;
+
+        for (Map.Entry<LocalDate, Double> entry : fechaAlReves.entrySet()) {
+            if (fechaSuministro.isAfter(entry.getKey()) || fechaSuministro.isEqual(entry.getKey())) {
+                valorPorKgEsteDia = entry.getValue();
+                break;
+            }
+        }
+
+        return valorPorKgEsteDia;
     }
     
     /**

@@ -1747,36 +1747,36 @@ public class Cooperativa {
      * @param nombreProducto Nombre del producto.
      * @return Valor por kilogramo de producto.
      */
-    public static double getPrecioPorKg(String nombreProducto) {
+    public static double getPrecioPorKg(String nombreProducto, LocalDate fechaSuministro) {
         switch (nombreProducto) {
             case "Aceite":
-                return ProdAceite.getValorPorKg();
+                return ProdAceite.getValorPorKg(fechaSuministro);
             case "Aceituna":
-                return ProdAceituna.getValorPorKg();
+                return ProdAceituna.getValorPorKg(fechaSuministro);
             case "Avellana":
-                return ProdAvellana.getValorPorKg();
+                return ProdAvellana.getValorPorKg(fechaSuministro);
             case "Avena":
-                return ProdAvena.getValorPorKg();
+                return ProdAvena.getValorPorKg(fechaSuministro);
             case "Fresa":
-                return ProdFresa.getValorPorKg();
+                return ProdFresa.getValorPorKg(fechaSuministro);
             case "Garbanzo":
-                return ProdGarbanzo.getValorPorKg();
+                return ProdGarbanzo.getValorPorKg(fechaSuministro);
             case "Girasol":
-                return ProdGirasol.getValorPorKg();
+                return ProdGirasol.getValorPorKg(fechaSuministro);
             case "Lechuga":
-                return ProdLechuga.getValorPorKg();
+                return ProdLechuga.getValorPorKg(fechaSuministro);
             case "Maiz":
-                return ProdMaiz.getValorPorKg();
+                return ProdMaiz.getValorPorKg(fechaSuministro);
             case "Naranja":
-                return ProdNaranja.getValorPorKg();
+                return ProdNaranja.getValorPorKg(fechaSuministro);
             case "Patata":
-                return ProdPatata.getValorPorKg();
+                return ProdPatata.getValorPorKg(fechaSuministro);
             case "Pepino":
-                return ProdPepino.getValorPorKg();
+                return ProdPepino.getValorPorKg(fechaSuministro);
             case "Tomate":
-                return ProdTomate.getValorPorKg();
+                return ProdTomate.getValorPorKg(fechaSuministro);
             case "Trigo":
-                return ProdTrigo.getValorPorKg();
+                return ProdTrigo.getValorPorKg(fechaSuministro);
             default:
                 return 0.0;
         }
