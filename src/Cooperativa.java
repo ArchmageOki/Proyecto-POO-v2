@@ -29,12 +29,12 @@ public class Cooperativa {
     public static List<Distribuidor> distribuidores = new ArrayList<>();
     public static List<Factura> facturas = new ArrayList<>();
 
-    public static Map<String, Double> productoDisponible = new HashMap<>(); // Está en toneladas.
+    public static Map<String, Integer> productoDisponible = new HashMap<>(); // Está en toneladas.
 
     static {
         productoDisponible = new HashMap<>();
         for (String producto : nombresProductos) {
-            productoDisponible.put(producto, 0.0);
+            productoDisponible.put(producto, 0);
         }
     }
 
@@ -97,6 +97,8 @@ public class Cooperativa {
             System.out.println("\t| 5 |\tComprar un producto");
             System.out.println();
             System.out.println("\t| 6 |\tDatos de análisis");
+            System.out.println();
+            System.out.println("\t| 7 |\tSalir");
 
             opcion = scanner.nextInt();
 
@@ -119,6 +121,8 @@ public class Cooperativa {
                 case 6:
                     menuDatosAnalisis(scanner);
                     break;
+                    case 7:
+                    opcion = 9;
                 default:
                     break;
             }
@@ -169,6 +173,7 @@ public class Cooperativa {
                     evolucionPreciosProductos(scanner);
                     break;
                 case 6:
+                    resumenAnual(scanner);
                 default:
                     numero = 7;
                     break;
@@ -177,6 +182,89 @@ public class Cooperativa {
         } while (numero != 7);
 
         printMenuSelector();
+    }
+
+    /**
+     * Imprime el resumen anual de la cooperativa.
+     */
+    private static void resumenAnual(Scanner scanner) {
+        int numeroProductores = 0;
+        int numeroCultivos = 0;
+        int numeroEmpresaLogistica = 0;
+        int numeroConsumidorFinal = 0;
+        int numeroDistribuidores = 0;
+        int numeroFacturas = 0;
+        double mayorFactura = 0;
+        int kgVendidos = 0;
+        double dineroEmpresasLogisticas = 0.0;
+        int kmRecorridos = 0;
+        double mayorCultivo = 0.0;
+        double dineroProductores = 0.0;
+        double dineroCooperativa = (double) (Math.round(Cooperativa.dinero * 100.0) / 100.0);
+        double dineroIva = 0.0;
+
+        for (Productor p : productores) {
+            numeroProductores++;
+            for (Producto prod : p.getProductos()) {
+                numeroCultivos++;
+                if (prod.getExtension() > mayorCultivo) {
+                    mayorCultivo = prod.getExtension();
+                }
+
+            }
+            dineroProductores += p.getPropietario().getDinero();
+        }
+
+        numeroEmpresaLogistica = empresasLogisticas.size();
+        numeroConsumidorFinal = consumidoresFinales.size();
+        numeroDistribuidores = distribuidores.size();
+        numeroFacturas = facturas.size();
+
+        for (Factura f : facturas) {
+            if (f.getPrecioTotal() > mayorFactura) {
+                mayorFactura = f.getPrecioTotal();
+            }
+            kgVendidos += f.getKg();
+            kmRecorridos += f.getDistancia();
+            dineroIva += f.getIva();
+        }
+
+        for (EmpresaLogistica e : empresasLogisticas) {
+            dineroEmpresasLogisticas += e.getDinero();
+        }
+
+        dineroProductores = (double) (Math.round(dineroProductores * 100.0) / 100.0);
+        dineroIva = (double) (Math.round(dineroIva * 100.0) / 100.0);
+
+        System.out.println("\tS. Coop. Juan Manuel Garrido - Resumen del año 2023");
+        System.out.println();
+        System.out.println("\tEntidades que han intervenido:");
+        System.out.println("\t\tProductores: " + numeroProductores + " personas diferentes");
+        System.out.println("\t\tCultivos: " + numeroCultivos + " cultivos únicos");
+        System.out.println("\t\tEmpresas logísticas: " + numeroEmpresaLogistica + " empresas diferentes");
+        System.out.println("\t\tConsumidores finales: " + numeroConsumidorFinal + " personas únicas");
+        System.out.println("\t\tDistribuidores: " + numeroDistribuidores + " empresas únicas");
+        System.out.println();
+        System.out.println("\tFacturas:");
+        System.out.println("\t\tFacturas: " + numeroFacturas + " compras únicas");
+        System.out.println("\t\tCompra de mayor precio: " + mayorFactura + " €");
+        System.out.println();
+        System.out.println("\tProductos:");
+        System.out.println("\t\tTotal de kg vendidos: " + kgVendidos + " kg");
+        System.out.println();
+        System.out.println("\tEmpresas logísticas:");
+        System.out.println("\t\tDinero ganado: " + dineroEmpresasLogisticas + " €");
+        System.out.println("\t\tKilómetros recorridos: " + kmRecorridos + " km");
+        System.out.println();
+        System.out.println("\tProductores:");
+        System.out.println("\t\tCultivo de mayor extensión: " + mayorCultivo + " hectáreas");
+        System.out.println("\t\tDinero total ganado: " + dineroProductores + " €");
+        System.out.println();
+        System.out.println("\tCooperativa:");
+        System.out.println("\t\tDinero ganado: " + dineroCooperativa + " €");
+        System.out.println("\t\tIVA recaudado: " + dineroIva + " €");
+        System.out.println();
+        
     }
 
     /**
@@ -564,7 +652,7 @@ public class Cooperativa {
         fechaEntrega = fechaPedido.plusDays(diasParaEnvio);
         System.out.println();
 
-        Factura factura = new Factura(nombreProducto, empresa, distribuidor, cantidad, fechaPedido, fechaEntrega);
+        Factura factura = new Factura(nombreProducto, empresa, distribuidor, cantidad, fechaPedido, fechaEntrega, true);
 
     }
 
@@ -768,7 +856,7 @@ public class Cooperativa {
         fechaEntrega = fechaPedido.plusDays(diasParaEnvio);
         System.out.println();
 
-        Factura factura = new Factura(nombreProducto, empresa, consumidor, cantidad, fechaPedido, fechaEntrega);
+        Factura factura = new Factura(nombreProducto, empresa, consumidor, cantidad, fechaPedido, fechaEntrega, true);
 
     }
 
@@ -1349,7 +1437,19 @@ public class Cooperativa {
      * consumidores finales, distribuidores y empresas logísticas.
      */
     private static void initMain() {
-        LocalDate fechaPrueba = LocalDate.of(2023, 5, 27);
+        Random mesAleatorio = new Random();
+        Random diaAleatorio = new Random();
+
+        LocalDate fechaPrueba = LocalDate.of(2023, mesAleatorio.nextInt(12) + 1, diaAleatorio.nextInt(28) + 1);
+        LocalDate fechaPrueba2 = LocalDate.of(2023, mesAleatorio.nextInt(12) + 1, diaAleatorio.nextInt(28) + 1);
+        LocalDate fechaPrueba3 = LocalDate.of(2023, mesAleatorio.nextInt(12) + 1, diaAleatorio.nextInt(28) + 1);
+        LocalDate fechaPrueba4 = LocalDate.of(2023, mesAleatorio.nextInt(12) + 1, diaAleatorio.nextInt(28) + 1);
+        LocalDate fechaPrueba5 = LocalDate.of(2023, mesAleatorio.nextInt(12) + 1, diaAleatorio.nextInt(28) + 1);
+        LocalDate fechaPrueba6 = LocalDate.of(2023, mesAleatorio.nextInt(12) + 1, diaAleatorio.nextInt(28) + 1);
+        LocalDate fechaPrueba7 = LocalDate.of(2023, mesAleatorio.nextInt(12) + 1, diaAleatorio.nextInt(28) + 1);
+        LocalDate fechaPrueba8 = LocalDate.of(2023, mesAleatorio.nextInt(12) + 1, diaAleatorio.nextInt(28) + 1);
+        LocalDate fechaPrueba9 = LocalDate.of(2023, mesAleatorio.nextInt(12) + 1, diaAleatorio.nextInt(28) + 1);
+        LocalDate fechaPrueba10 = LocalDate.of(2023, mesAleatorio.nextInt(12) + 1, diaAleatorio.nextInt(28) + 1);
 
         // Personas.
         Persona persona = new Persona("Juanma", "Garrido", "Aguilera", "73433769J", 27, "Hombre");
@@ -1461,17 +1561,17 @@ public class Cooperativa {
         EmpresaLogistica empresa5 = new EmpresaLogistica("Ángel y asociados S.L.", 0.048, 0.018);
 
         // Facturas
-        Factura factura = new Factura("Aceite", empresa2, distribuidor5, 1200, fechaPrueba, fechaPrueba);
-        Factura factura2 = new Factura("Lechuga", empresa1, distribuidor4, 1500, fechaPrueba, fechaPrueba);
-        Factura factura3 = new Factura("Garbanzo", empresa3, distribuidor3, 2000, fechaPrueba, fechaPrueba);
-        Factura factura4 = new Factura("Maiz", empresa5, distribuidor2, 1300, fechaPrueba, fechaPrueba);
-        Factura factura5 = new Factura("Patata", empresa4, distribuidor, 1000, fechaPrueba, fechaPrueba);
+        Factura factura = new Factura("Aceite", empresa2, distribuidor5, 1200, fechaPrueba, fechaPrueba, false);
+        Factura factura2 = new Factura("Lechuga", empresa1, distribuidor4, 1500, fechaPrueba2, fechaPrueba2, false);
+        Factura factura3 = new Factura("Garbanzo", empresa3, distribuidor3, 2000, fechaPrueba3, fechaPrueba3, false);
+        Factura factura4 = new Factura("Maiz", empresa5, distribuidor2, 1300, fechaPrueba4, fechaPrueba4, false);
+        Factura factura5 = new Factura("Patata", empresa4, distribuidor, 1000, fechaPrueba5, fechaPrueba5, false);
 
-        Factura factura6 = new Factura("Avellana", empresa1, consumidor, 35, fechaPrueba, fechaPrueba);
-        Factura factura7 = new Factura("Naranja", empresa2, consumidor2, 85, fechaPrueba, fechaPrueba);
-        Factura factura8 = new Factura("Pepino", empresa3, consumidor3, 40, fechaPrueba, fechaPrueba);
-        Factura factura9 = new Factura("Trigo", empresa4, consumidor5, 70, fechaPrueba, fechaPrueba);
-        Factura factura10 = new Factura("Fresa", empresa5, consumidor4, 15, fechaPrueba, fechaPrueba);
+        Factura factura6 = new Factura("Avellana", empresa1, consumidor, 35, fechaPrueba6, fechaPrueba6, false);
+        Factura factura7 = new Factura("Naranja", empresa2, consumidor2, 85, fechaPrueba7, fechaPrueba7, false);
+        Factura factura8 = new Factura("Pepino", empresa3, consumidor3, 40, fechaPrueba8, fechaPrueba8, false);
+        Factura factura9 = new Factura("Trigo", empresa4, consumidor5, 70, fechaPrueba9, fechaPrueba9, false);
+        Factura factura10 = new Factura("Fresa", empresa5, consumidor4, 15, fechaPrueba10, fechaPrueba10, false);
 
     }
 
@@ -1479,10 +1579,10 @@ public class Cooperativa {
      * Imprime el map de producto disponible.
      */
     private static void printProductoDisponible() {
-        for (Map.Entry<String, Double> map : productoDisponible.entrySet()) {
+        for (Map.Entry<String, Integer> map : productoDisponible.entrySet()) {
             String nombreProducto = map.getKey();
-            double cantidad = map.getValue();
-            System.out.printf("\t%-10s = %8.2f toneladas\n", nombreProducto, cantidad);
+            int cantidad = map.getValue();
+            System.out.printf("\t%-10s = %8d kg\n", nombreProducto, cantidad);
         }
         System.out.println();
     }
@@ -1584,11 +1684,10 @@ public class Cooperativa {
      * @param extension      Cantidad que se quiere añadir.
      */
     public static void addProductoDisponible(String nombreProducto, double extension) {
-        double toneladasActuales = productoDisponible.get(nombreProducto);
-        double toneladasASumar = getRendimientoFromNombre(nombreProducto) * extension;
-        double nuevasToneladas = toneladasActuales + toneladasASumar;
-        nuevasToneladas = (double) Math.round(nuevasToneladas * 100) / 100;
-        productoDisponible.put(nombreProducto, nuevasToneladas);
+        int kgActuales = productoDisponible.get(nombreProducto);
+        double kgASumar = getRendimientoFromNombre(nombreProducto) * extension * 1000;
+        int nuevosKg = kgActuales + (int) kgASumar;
+        productoDisponible.put(nombreProducto, nuevosKg);
     }
 
     /**
@@ -1638,10 +1737,9 @@ public class Cooperativa {
      * @param extension      Cantidad que se quiere restar.
      */
     public static void substractProductoDisponible(String nombreProducto, double extension) {
-        double toneladasActuales = productoDisponible.get(nombreProducto);
-        double toneladasARestar = getRendimientoFromNombre(nombreProducto) * extension;
-        double nuevasToneladas = toneladasActuales - toneladasARestar;
-        nuevasToneladas = (double) Math.round(nuevasToneladas * 100) / 100;
+        int toneladasActuales = productoDisponible.get(nombreProducto);
+        double toneladasARestar = getRendimientoFromNombre(nombreProducto) * extension * 1000;
+        int nuevasToneladas = toneladasActuales - (int) toneladasARestar;
         productoDisponible.put(nombreProducto, nuevasToneladas);
     }
 
@@ -1705,7 +1803,7 @@ public class Cooperativa {
     public static void printFacturaFromId(int id) {
         for (Factura factura : facturas) {
             if (factura.getId() == id) {
-                factura.printFactura();
+                factura.printFactura(true);
                 break;
             }
         }
