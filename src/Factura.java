@@ -461,19 +461,4 @@ public class Factura {
         checkCondiciones();
     }
 
-    /**
-     * @param diasParaEnvio Plazo de días que solicita el cliente para que se le
-     *                      entregue el producto.
-     * @return Entero entre 0 y 20. El plazo no puede ser mayor a 20 días.
-     */
-    private int condicionesDiasEnvio(int diasParaEnvio) {
-        if (diasParaEnvio > 20) {
-            System.out.println(
-                    "No se puede realizar un pedido con un plazo de entrega superior a 20 días. Se entregará dentro de 20 días.");
-            return 20;
-        } else if (diasParaEnvio < 0) {
-            return 0;
-        }
-        return diasParaEnvio;
-    }
 }

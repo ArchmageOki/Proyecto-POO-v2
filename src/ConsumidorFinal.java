@@ -1,7 +1,5 @@
 package src;
 
-import java.time.LocalDate;
-
 public class ConsumidorFinal extends Persona {
 
     private int distancia;
@@ -53,31 +51,6 @@ public class ConsumidorFinal extends Persona {
     @Override
     protected void addToCooperativa() {
         Cooperativa.addConsumidorFinal(this);
-    }
-
-    /**
-     * @param nombreProducto Nombre del producto que se evalúa.
-     * @param kg             Kilogramos de producto.
-     * @return True si se dan las condiciones adecuadas. False si no se cumplen.
-     */
-    private boolean checkCondiciones(String nombreProducto, int kg, LocalDate fechaCompra) {
-        LocalDate fecha1 = LocalDate.of(2023, 1, 1);
-        LocalDate fecha2 = LocalDate.of(2023, 12, 31);
-
-        if (!Cooperativa.nombresProductos.contains(nombreProducto)) {
-            System.out.println("El producto no existe en la cooperativa.");
-            return false;
-        } else if (kg > 100) {
-            System.out.println("No se permiten compras superiores a 100kg.");
-            return false;
-        } else if (kg > Cooperativa.productoDisponible.get(nombreProducto) * 1000) {
-            System.out.println("No hay suficiente producto disponible.");
-            return false;
-        } else if(fechaCompra.isBefore(fecha1) || fechaCompra.isAfter(fecha2)) {
-            System.out.println("La fecha indicada no pertenece al año 2023");
-            return false;
-        }
-        return true;
     }
 
     /**

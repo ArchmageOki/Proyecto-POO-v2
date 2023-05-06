@@ -586,7 +586,7 @@ public class Cooperativa {
             System.out.print("\tCantidad inválida. Introducir una cantidad válida: ");
             cantidad = scanner.nextInt();
         }
-        if (cantidad > Cooperativa.productoDisponible.get(nombreProducto) * 1000) {
+        if (cantidad > Cooperativa.productoDisponible.get(nombreProducto)) {
             System.out.println("\tNo hay tanto producto disponible.");
             System.out.println();
             menuDistribuidor(scanner);
@@ -790,7 +790,7 @@ public class Cooperativa {
             System.out.print("\tCantidad inválida. Introducir una cantidad válida: ");
             cantidad = scanner.nextInt();
         }
-        if (cantidad > Cooperativa.productoDisponible.get(nombreProducto) * 1000) {
+        if (cantidad > Cooperativa.productoDisponible.get(nombreProducto)) {
             System.out.println("\tNo hay tanto producto disponible.");
             System.out.println();
             menuConsumidorFinal(scanner);
