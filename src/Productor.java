@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Productor {
 
-    private Persona propietario;
+    private final Persona propietario;
     private List<Producto> productos;
     private double balance;
     private double extension;
@@ -36,13 +36,6 @@ public class Productor {
      */
     public Persona getPropietario() {
         return this.propietario;
-    }
-
-    /**
-     * @param propietario Establece una persona nueva como propietario.
-     */
-    public void setPropietario(Persona propietario) {
-        this.propietario = propietario;
     }
 
     /**
